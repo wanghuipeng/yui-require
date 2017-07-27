@@ -1,0 +1,2374 @@
+/*from tccdn minify at 2016-8-28 10:27:25,file：/cn/s/touch/2014/final_img/z_photoswipe.js?v=20140520*/
+
+(function(a) {
+	if(!Function.prototype.bind) {
+		Function.prototype.bind=function(j) {
+			var e=[].slice, h=e.call(arguments, 1), i=this, l=function() {}
+			, k=function() {
+				return i.apply(this instanceof l?this:j|| {}
+				, h.concat(e.call(arguments)))
+			}
+			;
+			l.prototype=i.prototype;
+			k.prototype=new l;
+			return k
+		}
+	}
+	if(typeof a.Code==="undefined") {
+		a.Code= {}
+	}
+	a.Code.Util= {
+		registerNamespace:function() {
+			var k=arguments, e=null, h, j, m, l, n;
+			h=0;
+			for(l=k.length;
+			h<l;
+			h++) {
+				m=k[h];
+				m=m.split(".");
+				e=m[0];
+				typeof a[e]==="undefined"&&(a[e]= {}
+				);
+				e=a[e];
+				j=1;
+				for(n=m.length;
+				j<n;
+				++j) {
+					e[m[j]]=e[m[j]]|| {}
+					, e=e[m[j]]
+				}
+			}
+		}
+		, coalesce:function() {
+			var c, b;
+			c=0;
+			for(b=arguments.length;
+			c<b;
+			c++) {
+				if(!this.isNothing(arguments[c])) {
+					return arguments[c]
+				}
+			}
+			return null
+		}
+		, extend:function(h, e, f) {
+			var g;
+			this.isNothing(f)&&(f=!0);
+			if(h&&e&&this.isObject(e)) {
+				for(g in e) {
+					this.objectHasProperty(e, g)&&(f?h[g]=e[g]: typeof h[g]==="undefined"&&(h[g]=e[g]))
+				}
+			}
+		}
+		, clone:function(c) {
+			var b= {}
+			;
+			this.extend(b, c);
+			return b
+		}
+		, isObject:function(b) {
+			return b instanceof Object
+		}
+		, isFunction:function(b) {
+			return {}
+			.toString.call(b)==="[object Function]"
+		}
+		, isArray:function(b) {
+			return b instanceof Array
+		}
+		, isLikeArray:function(b) {
+			return typeof b.length==="number"
+		}
+		, isNumber:function(b) {
+			return typeof b==="number"
+		}
+		, isString:function(b) {
+			return typeof b==="string"
+		}
+		, isNothing:function(b) {
+			if(typeof b==="undefined"||b===null) {
+				return !0
+			}
+			return !1
+		}
+		, swapArrayElements:function(h, e, f) {
+			var g=h[e];
+			h[e]=h[f];
+			h[f]=g
+		}
+		, trim:function(b) {
+			return b.replace(/^\s\s*/, "").replace(/\s\s*$/, "")
+		}
+		, toCamelCase:function(b) {
+			return b.replace(/(\-[a-z])/g, function(c) {
+				return c.toUpperCase().replace("-", "")
+			}
+			)
+		}
+		, toDashedCase:function(b) {
+			return b.replace(/([A-Z])/g, function(c) {
+				return"-"+c.toLowerCase()
+			}
+			)
+		}
+		, arrayIndexOf:function(k, h, i) {
+			var j, n, m, l;
+			m=-1;
+			j=0;
+			for(n=h.length;
+			j<n;
+			j++) {
+				if(l=h[j], this.isNothing(i)) {
+					if(l===k) {
+						m=j;
+						break
+					}
+				}
+				else {
+					if(this.objectHasProperty(l, i)&&l[i]===k) {
+						m=j;
+						break
+					}
+				}
+			}
+			return m
+		}
+		, objectHasProperty:function(c, b) {
+			return c.hasOwnProperty?c.hasOwnProperty(b): "undefined"!==typeof c[b]
+		}
+	}
+}
+
+)(window);
+(function(b, a) {
+	a.Browser= {
+		ua:null, version:null, safari:null, webkit:null, opera:null, msie:null, chrome:null, mozilla:null, android:null, blackberry:null, iPad:null, iPhone:null, iPod:null, iOS:null, is3dSupported:null, isCSSTransformSupported:null, isTouchSupported:null, isGestureSupported:null, _detect:function() {
+			this.ua=b.navigator.userAgent;
+			this.version=this.ua.match(/.+(?: rv|it|ra|ie)[\/: ]([\d.]+)/)||[];
+			this.safari=/Safari/gi.test(b.navigator.appVersion);
+			this.webkit=/webkit/i.test(this.ua);
+			this.opera=/opera/i.test(this.ua);
+			this.msie=/msie/i.test(this.ua)&&!this.opera;
+			this.chrome=/Chrome/i.test(this.ua);
+			this.firefox=/Firefox/i.test(this.ua);
+			this.fennec=/Fennec/i.test(this.ua);
+			this.mozilla=/mozilla/i.test(this.ua)&&!/(compatible|webkit)/.test(this.ua);
+			this.android=/android/i.test(this.ua);
+			this.blackberry=/blackberry/i.test(this.ua);
+			this.iOS=/iphone|ipod|ipad/gi.test(b.navigator.platform);
+			this.iPad=/ipad/gi.test(b.navigator.platform);
+			this.iPhone=/iphone/gi.test(b.navigator.platform);
+			this.iPod=/ipod/gi.test(b.navigator.platform);
+			var c=document.createElement("div");
+			this.is3dSupported=!a.isNothing(c.style.WebkitPerspective);
+			this.isCSSTransformSupported=!a.isNothing(c.style.WebkitTransform)||!a.isNothing(c.style.MozTransform)||!a.isNothing(c.style.transformProperty);
+			this.isTouchSupported=this.isEventSupported("touchstart");
+			this.isGestureSupported=this.isEventSupported("gesturestart")
+		}
+		, _eventTagNames: {
+			select: "input", change: "input", submit: "form", reset: "form", error: "img", load: "img", abort: "img"
+		}
+		, isEventSupported:function(d) {
+			var e=document.createElement(this._eventTagNames[d]||"div"), f, d="on"+d;
+			f=a.objectHasProperty(e, d);
+			f||(e.setAttribute(d, "return;"), f=typeof e[d]==="function");
+			return f
+		}
+		, isLandscape:function() {
+			return a.DOM.windowWidth()>a.DOM.windowHeight()
+		}
+	}
+	;
+	a.Browser._detect()
+}
+
+)(window, window.Code.Util);
+(function(f, c, b) {
+	b.extend(b, {
+		Events: {
+			add:function(d, e, h) {
+				c(d).bind(e, h)
+			}
+			, remove:function(d, e, h) {
+				c(d).unbind(e, h)
+			}
+			, fire:function(d, e) {
+				var i, h=Array.prototype.slice.call(arguments).splice(2);
+				i=typeof e==="string"? {
+					type: e
+				}
+				:e;
+				c(d).trigger(c.Event(i.type, i), h)
+			}
+			, getMousePosition:function(d) {
+				return {
+					x: d.pageX, y: d.pageY
+				}
+			}
+			, getTouchEvent:function(d) {
+				return d.originalEvent
+			}
+			, getWheelDelta:function(a) {
+				var d=0;
+				b.isNothing(a.wheelDelta)?b.isNothing(a.detail)||(d=-a.detail/3): d=a.wheelDelta/120;
+				return d
+			}
+			, domReady:function(d) {
+				c(document).ready(d)
+			}
+		}
+	}
+	)
+}
+
+)(window, window.jQuery, window.Code.Util);
+(function(f, c, b) {
+	b.extend(b, {
+		DOM: {
+			setData:function(a, e, j) {
+				if(b.isLikeArray(a)) {
+					var i, h;
+					i=0;
+					for(h=a.length;
+					i<h;
+					i++) {
+						b.DOM._setData(a[i], e, j)
+					}
+				}
+				else {
+					b.DOM._setData(a, e, j)
+				}
+			}
+			, _setData:function(a, d, e) {
+				b.DOM.setAttribute(a, "data-"+d, e)
+			}
+			, getData:function(a, d, e) {
+				return b.DOM.getAttribute(a, "data-"+d, e)
+			}
+			, removeData:function(a, d) {
+				if(b.isLikeArray(a)) {
+					var h, e;
+					h=0;
+					for(e=a.length;
+					h<e;
+					h++) {
+						b.DOM._removeData(a[h], d)
+					}
+				}
+				else {
+					b.DOM._removeData(a, d)
+				}
+			}
+			, _removeData:function(a, d) {
+				b.DOM.removeAttribute(a, "data-"+d)
+			}
+			, isChildOf:function(d, e) {
+				if(e===d) {
+					return !1
+				}
+				for(;
+				d&&d!==e;
+				) {
+					d=d.parentNode
+				}
+				return d===e
+			}
+			, find:function(a, d) {
+				if(b.isNothing(d)) {
+					d=f.document
+				}
+				var h=c(a, d), e=[], k, l;
+				k=0;
+				for(l=h.length;
+				k<l;
+				k++) {
+					e.push(h[k])
+				}
+				return e
+			}
+			, createElement:function(d, e, h) {
+				d=c("<"+d+"></"+d+">");
+				d.attr(e);
+				d.append(h);
+				return d[0]
+			}
+			, appendChild:function(d, e) {
+				c(e).append(d)
+			}
+			, insertBefore:function(d, e) {
+				c(d).insertBefore(e)
+			}
+			, appendText:function(d, e) {
+				c(e).text(d)
+			}
+			, appendToBody:function(d) {
+				c("body").append(d)
+			}
+			, removeChild:function(d) {
+				c(d).empty().remove()
+			}
+			, removeChildren:function(d) {
+				c(d).empty()
+			}
+			, hasAttribute:function(a, d) {
+				return !b.isNothing(c(a).attr(d))
+			}
+			, getAttribute:function(a, d, e) {
+				a=c(a).attr(d);
+				b.isNothing(a)&&!b.isNothing(e)&&(a=e);
+				return a
+			}
+			, setAttribute:function(a, e, j) {
+				if(b.isLikeArray(a)) {
+					var i, h;
+					i=0;
+					for(h=a.length;
+					i<h;
+					i++) {
+						b.DOM._setAttribute(a[i], e, j)
+					}
+				}
+				else {
+					b.DOM._setAttribute(a, e, j)
+				}
+			}
+			, _setAttribute:function(d, e, h) {
+				c(d).attr(e, h)
+			}
+			, removeAttribute:function(a, d) {
+				if(b.isLikeArray(a)) {
+					var h, e;
+					h=0;
+					for(e=a.length;
+					h<e;
+					h++) {
+						b.DOM._removeAttribute(a[h], d)
+					}
+				}
+				else {
+					b.DOM._removeAttribute(a, d)
+				}
+			}
+			, _removeAttribute:function(d, e) {
+				c(d).removeAttr(e)
+			}
+			, addClass:function(a, d) {
+				if(b.isLikeArray(a)) {
+					var h, e;
+					h=0;
+					for(e=a.length;
+					h<e;
+					h++) {
+						b.DOM._addClass(a[h], d)
+					}
+				}
+				else {
+					b.DOM._addClass(a, d)
+				}
+			}
+			, _addClass:function(d, e) {
+				c(d).addClass(e)
+			}
+			, removeClass:function(a, d) {
+				if(b.isLikeArray(a)) {
+					var h, e;
+					h=0;
+					for(e=a.length;
+					h<e;
+					h++) {
+						b.DOM._removeClass(a[h], d)
+					}
+				}
+				else {
+					b.DOM._removeClass(a, d)
+				}
+			}
+			, _removeClass:function(d, e) {
+				c(d).removeClass(e)
+			}
+			, hasClass:function(d, e) {
+				c(d).hasClass(e)
+			}
+			, setStyle:function(a, e, j) {
+				if(b.isLikeArray(a)) {
+					var i, h;
+					i=0;
+					for(h=a.length;
+					i<h;
+					i++) {
+						b.DOM._setStyle(a[i], e, j)
+					}
+				}
+				else {
+					b.DOM._setStyle(a, e, j)
+				}
+			}
+			, _setStyle:function(a, d, h) {
+				var e;
+				if(b.isObject(d)) {
+					for(e in d) {
+						b.objectHasProperty(d, e)&&(e==="width"?b.DOM.width(a, d[e]): e==="height"?b.DOM.height(a, d[e]): c(a).css(e, d[e]))
+					}
+				}
+				else {
+					c(a).css(d, h)
+				}
+			}
+			, getStyle:function(d, e) {
+				return c(d).css(e)
+			}
+			, hide:function(a) {
+				if(b.isLikeArray(a)) {
+					var d, e;
+					d=0;
+					for(e=a.length;
+					d<e;
+					d++) {
+						b.DOM._hide(a[d])
+					}
+				}
+				else {
+					b.DOM._hide(a)
+				}
+			}
+			, _hide:function(d) {
+				c(d).hide()
+			}
+			, show:function(a) {
+				if(b.isLikeArray(a)) {
+					var d, e;
+					d=0;
+					for(e=a.length;
+					d<e;
+					d++) {
+						b.DOM._show(a[d])
+					}
+				}
+				else {
+					b.DOM._show(a)
+				}
+			}
+			, _show:function(d) {
+				c(d).show()
+			}
+			, width:function(a, d) {
+				b.isNothing(d)||c(a).width(d);
+				return c(a).width()
+			}
+			, outerWidth:function(d) {
+				return c(d).outerWidth()
+			}
+			, height:function(a, d) {
+				b.isNothing(d)||c(a).height(d);
+				return c(a).height()
+			}
+			, outerHeight:function(d) {
+				return c(d).outerHeight()
+			}
+			, documentWidth:function() {
+				return c(document.documentElement).width()
+			}
+			, documentHeight:function() {
+				return c(document.documentElement).height()
+			}
+			, documentOuterWidth:function() {
+				return b.DOM.width(document.documentElement)
+			}
+			, documentOuterHeight:function() {
+				return b.DOM.outerHeight(document.documentElement)
+			}
+			, bodyWidth:function() {
+				return c(document.body).width()
+			}
+			, bodyHeight:function() {
+				return c(document.body).height()
+			}
+			, bodyOuterWidth:function() {
+				return b.DOM.outerWidth(document.body)
+			}
+			, bodyOuterHeight:function() {
+				return b.DOM.outerHeight(document.body)
+			}
+			, windowWidth:function() {
+				if(!f.innerWidth) {
+					return c(f).width()
+				}
+				return f.innerWidth
+			}
+			, windowHeight:function() {
+				if(!f.innerHeight) {
+					return c(f).height()
+				}
+				return f.innerHeight
+			}
+			, windowScrollLeft:function() {
+				if(!f.pageXOffset) {
+					return c(f).scrollLeft()
+				}
+				return f.pageXOffset
+			}
+			, windowScrollTop:function() {
+				if(!f.pageYOffset) {
+					return c(f).scrollTop()
+				}
+				return f.pageYOffset
+			}
+		}
+	}
+	)
+}
+
+)(window, window.jQuery, window.Code.Util);
+(function(b, a) {
+	a.extend(a, {
+		Animation: {
+			_applyTransitionDelay:50, _transitionEndLabel:b.document.documentElement.style.webkitTransition!==void 0?"webkitTransitionEnd":"transitionend", _transitionEndHandler:null, _transitionPrefix:b.document.documentElement.style.webkitTransition!==void 0?"webkitTransition":b.document.documentElement.style.MozTransition!==void 0?"MozTransition":"transition", _transformLabel:b.document.documentElement.style.webkitTransform!==void 0?"webkitTransform":b.document.documentElement.style.MozTransition!==void 0?"MozTransform":"transform", _getTransitionEndHandler:function() {
+				if(a.isNothing(this._transitionEndHandler)) {
+					this._transitionEndHandler=this._onTransitionEnd.bind(this)
+				}
+				return this._transitionEndHandler
+			}
+			, stop:function(c) {
+				if(a.Browser.isCSSTransformSupported) {
+					var d= {}
+					;
+					a.Events.remove(c, this._transitionEndLabel, this._getTransitionEndHandler());
+					a.isNothing(c.callbackLabel)&&delete c.callbackLabel;
+					d[this._transitionPrefix+"Property"]="";
+					d[this._transitionPrefix+"Duration"]="";
+					d[this._transitionPrefix+"TimingFunction"]="";
+					d[this._transitionPrefix+"Delay"]="";
+					d[this._transformLabel]="";
+					a.DOM.setStyle(c, d)
+				}
+				else {
+					a.isNothing(b.jQuery)||b.jQuery(c).stop(!0, !0)
+				}
+			}
+			, fadeIn:function(d, e, h, j, i) {
+				i=a.coalesce(i, 1);
+				i<=0&&(i=1);
+				if(e<=0&&(a.DOM.setStyle(d, "opacity", i), !a.isNothing(h))) {
+					h(d);
+					return
+				}
+				a.DOM.getStyle(d, "opacity")>=1&&a.DOM.setStyle(d, "opacity", 0);
+				a.Browser.isCSSTransformSupported?this._applyTransition(d, "opacity", i, e, h, j):a.isNothing(b.jQuery)||b.jQuery(d).fadeTo(e, i, h)
+			}
+			, fadeTo:function(d, e, h, j, i) {
+				this.fadeIn(d, h, j, i, e)
+			}
+			, fadeOut:function(d, e, f, h) {
+				if(e<=0&&(a.DOM.setStyle(d, "opacity", 0), !a.isNothing(f))) {
+					f(d);
+					return
+				}
+				a.Browser.isCSSTransformSupported?this._applyTransition(d, "opacity", 0, e, f, h):b.jQuery(d).fadeTo(e, 0, f)
+			}
+			, slideBy:function(d, e, h, l, k, m) {
+				var n= {}
+				, e=a.coalesce(e, 0), h=a.coalesce(h, 0), m=a.coalesce(m, "ease-out");
+				n[this._transitionPrefix+"Property"]="all";
+				n[this._transitionPrefix+"Delay"]="0";
+				l===0?(n[this._transitionPrefix+"Duration"]="", n[this._transitionPrefix+"TimingFunction"]=""): (n[this._transitionPrefix+"Duration"]=l+"ms", n[this._transitionPrefix+"TimingFunction"]=a.coalesce(m, "ease-out"), a.Events.add(d, this._transitionEndLabel, this._getTransitionEndHandler()));
+				n[this._transformLabel]=a.Browser.is3dSupported?"translate3d("+e+"px, "+h+"px, 0px)": "translate("+e+"px, "+h+"px)";
+				if(!a.isNothing(k)) {
+					d.cclallcallback=k
+				}
+				a.DOM.setStyle(d, n);
+				l===0&&b.setTimeout(function() {
+					this._leaveTransforms(d)
+				}
+				.bind(this), this._applyTransitionDelay)
+			}
+			, resetTranslate:function(c) {
+				var d= {}
+				;
+				d[this._transformLabel]=d[this._transformLabel]=a.Browser.is3dSupported?"translate3d(0px, 0px, 0px)": "translate(0px, 0px)";
+				a.DOM.setStyle(c, d)
+			}
+			, _applyTransition:function(d, e, h, l, k, m) {
+				var n= {}
+				, m=a.coalesce(m, "ease-in");
+				n[this._transitionPrefix+"Property"]=e;
+				n[this._transitionPrefix+"Duration"]=l+"ms";
+				n[this._transitionPrefix+"TimingFunction"]=m;
+				n[this._transitionPrefix+"Delay"]="0";
+				a.Events.add(d, this._transitionEndLabel, this._getTransitionEndHandler());
+				a.DOM.setStyle(d, n);
+				a.isNothing(k)||(d["ccl"+e+"callback"]=k);
+				b.setTimeout(function() {
+					a.DOM.setStyle(d, e, h)
+				}
+				, this._applyTransitionDelay)
+			}
+			, _onTransitionEnd:function(c) {
+				a.Events.remove(c.currentTarget, this._transitionEndLabel, this._getTransitionEndHandler());
+				this._leaveTransforms(c.currentTarget)
+			}
+			, _leaveTransforms:function(d) {
+				var e=d.style[this._transitionPrefix+"Property"], m=e!==""?"ccl"+e+"callback":"cclallcallback", o, e=a.coalesce(d.style.webkitTransform, d.style.MozTransform, d.style.transform), n, q=b.parseInt(a.DOM.getStyle(d, "left"), 0), r=b.parseInt(a.DOM.getStyle(d, "top"), 0), p, t, s= {}
+				;
+				e!==""&&(e=a.Browser.is3dSupported?e.match(/translate3d\((.*?)\)/): e.match(/translate\((.*?)\)/), a.isNothing(e)||(n=e[1].split(", "), p=b.parseInt(n[0], 0), t=b.parseInt(n[1], 0)));
+				s[this._transitionPrefix+"Property"]="";
+				s[this._transitionPrefix+"Duration"]="";
+				s[this._transitionPrefix+"TimingFunction"]="";
+				s[this._transitionPrefix+"Delay"]="";
+				a.DOM.setStyle(d, s);
+				b.setTimeout(function() {
+					if(!a.isNothing(n)) {
+						s= {}
+						, s[this._transformLabel]="", s.left=q+p+"px", s.top=r+t+"px", a.DOM.setStyle(d, s)
+					}
+					a.isNothing(d[m])||(o=d[m], delete d[m], o(d))
+				}
+				.bind(this), this._applyTransitionDelay)
+			}
+		}
+	}
+	)
+}
+
+)(window, window.Code.Util);
+(function(f, c, b) {
+	b.registerNamespace("Code.Util.TouchElement");
+	b.TouchElement.EventTypes= {
+		onTouch: "CodeUtilTouchElementOnTouch"
+	}
+	;
+	b.TouchElement.ActionTypes= {
+		touchStart: "touchStart", touchMove: "touchMove", touchEnd: "touchEnd", touchMoveEnd: "touchMoveEnd", tap: "tap", doubleTap: "doubleTap", swipeLeft: "swipeLeft", swipeRight: "swipeRight", swipeUp: "swipeUp", swipeDown: "swipeDown", gestureStart: "gestureStart", gestureChange: "gestureChange", gestureEnd: "gestureEnd"
+	}
+}
+
+)(window, window.klass, window.Code.Util);
+(function(f, c, b) {
+	b.registerNamespace("Code.Util.TouchElement");
+	b.TouchElement.TouchElementClass=c( {
+		el:null, captureSettings:null, touchStartPoint:null, touchEndPoint:null, touchStartTime:null, doubleTapTimeout:null, touchStartHandler:null, touchMoveHandler:null, touchEndHandler:null, mouseDownHandler:null, mouseMoveHandler:null, mouseUpHandler:null, mouseOutHandler:null, gestureStartHandler:null, gestureChangeHandler:null, gestureEndHandler:null, swipeThreshold:null, swipeTimeThreshold:null, doubleTapSpeed:null, dispose:function() {
+			var a;
+			this.removeEventHandlers();
+			for(a in this) {
+				b.objectHasProperty(this, a)&&(this[a]=null)
+			}
+		}
+		, initialize:function(a, d) {
+			this.el=a;
+			this.captureSettings= {
+				swipe: !1, move: !1, gesture: !1, doubleTap: !1, preventDefaultTouchEvents: !0
+			}
+			;
+			b.extend(this.captureSettings, d);
+			this.swipeThreshold=50;
+			this.doubleTapSpeed=this.swipeTimeThreshold=250;
+			this.touchStartPoint= {
+				x: 0, y: 0
+			}
+			;
+			this.touchEndPoint= {
+				x: 0, y: 0
+			}
+		}
+		, addEventHandlers:function() {
+			if(b.isNothing(this.touchStartHandler)) {
+				this.touchStartHandler=this.onTouchStart.bind(this), this.touchMoveHandler=this.onTouchMove.bind(this), this.touchEndHandler=this.onTouchEnd.bind(this), this.mouseDownHandler=this.onMouseDown.bind(this), this.mouseMoveHandler=this.onMouseMove.bind(this), this.mouseUpHandler=this.onMouseUp.bind(this), this.mouseOutHandler=this.onMouseOut.bind(this), this.gestureStartHandler=this.onGestureStart.bind(this), this.gestureChangeHandler=this.onGestureChange.bind(this), this.gestureEndHandler=this.onGestureEnd.bind(this)
+			}
+			b.Events.add(this.el, "touchstart", this.touchStartHandler);
+			this.captureSettings.move&&b.Events.add(this.el, "touchmove", this.touchMoveHandler);
+			b.Events.add(this.el, "touchend", this.touchEndHandler);
+			b.Events.add(this.el, "mousedown", this.mouseDownHandler);
+			b.Browser.isGestureSupported&&this.captureSettings.gesture&&(b.Events.add(this.el, "gesturestart", this.gestureStartHandler), b.Events.add(this.el, "gesturechange", this.gestureChangeHandler), b.Events.add(this.el, "gestureend", this.gestureEndHandler))
+		}
+		, removeEventHandlers:function() {
+			b.Events.remove(this.el, "touchstart", this.touchStartHandler);
+			this.captureSettings.move&&b.Events.remove(this.el, "touchmove", this.touchMoveHandler);
+			b.Events.remove(this.el, "touchend", this.touchEndHandler);
+			b.Events.remove(this.el, "mousedown", this.mouseDownHandler);
+			b.Browser.isGestureSupported&&this.captureSettings.gesture&&(b.Events.remove(this.el, "gesturestart", this.gestureStartHandler), b.Events.remove(this.el, "gesturechange", this.gestureChangeHandler), b.Events.remove(this.el, "gestureend", this.gestureEndHandler))
+		}
+		, getTouchPoint:function(d) {
+			return {
+				x: d[0].pageX, y: d[0].pageY
+			}
+		}
+		, fireTouchEvent:function(a) {
+			var e=0, j=0, i=0, h, e=this.touchEndPoint.x-this.touchStartPoint.x, j=this.touchEndPoint.y-this.touchStartPoint.y, i=Math.sqrt(e*e+j*j);
+			if(this.captureSettings.swipe&&(h=new Date, h-=this.touchStartTime, h<=this.swipeTimeThreshold)) {
+				if(f.Math.abs(e)>=this.swipeThreshold) {
+					b.Events.fire(this, {
+						type: b.TouchElement.EventTypes.onTouch, target: this, point: this.touchEndPoint, action: e<0?b.TouchElement.ActionTypes.swipeLeft: b.TouchElement.ActionTypes.swipeRight, targetEl: a.target, currentTargetEl: a.currentTarget
+					}
+					);
+					return
+				}
+				if(f.Math.abs(j)>=this.swipeThreshold) {
+					b.Events.fire(this, {
+						type: b.TouchElement.EventTypes.onTouch, target: this, point: this.touchEndPoint, action: j<0?b.TouchElement.ActionTypes.swipeUp: b.TouchElement.ActionTypes.swipeDown, targetEl: a.target, currentTargetEl: a.currentTarget
+					}
+					);
+					return
+				}
+			}
+			i>1?b.Events.fire(this, {
+				type: b.TouchElement.EventTypes.onTouch, target: this, action: b.TouchElement.ActionTypes.touchMoveEnd, point: this.touchEndPoint, targetEl: a.target, currentTargetEl: a.currentTarget
+			}
+			):this.captureSettings.doubleTap?b.isNothing(this.doubleTapTimeout)?this.doubleTapTimeout=f.setTimeout(function() {
+				this.doubleTapTimeout=null;
+				b.Events.fire(this, {
+					type: b.TouchElement.EventTypes.onTouch, target: this, point: this.touchEndPoint, action: b.TouchElement.ActionTypes.tap, targetEl: a.target, currentTargetEl: a.currentTarget
+				}
+				)
+			}
+			.bind(this), this.doubleTapSpeed):(f.clearTimeout(this.doubleTapTimeout), this.doubleTapTimeout=null, b.Events.fire(this, {
+				type: b.TouchElement.EventTypes.onTouch, target: this, point: this.touchEndPoint, action: b.TouchElement.ActionTypes.doubleTap, targetEl: a.target, currentTargetEl: a.currentTarget
+			}
+			)):b.Events.fire(this, {
+				type: b.TouchElement.EventTypes.onTouch, target: this, point: this.touchEndPoint, action: b.TouchElement.ActionTypes.tap, targetEl: a.target, currentTargetEl: a.currentTarget
+			}
+			)
+		}
+		, onTouchStart:function(a) {
+			this.captureSettings.preventDefaultTouchEvents&&a.preventDefault();
+			b.Events.remove(this.el, "mousedown", this.mouseDownHandler);
+			var d=b.Events.getTouchEvent(a).touches;
+			d.length>1&&this.captureSettings.gesture?this.isGesture=!0:(this.touchStartTime=new Date, this.isGesture=!1, this.touchStartPoint=this.getTouchPoint(d), b.Events.fire(this, {
+				type: b.TouchElement.EventTypes.onTouch, target: this, action: b.TouchElement.ActionTypes.touchStart, point: this.touchStartPoint, targetEl: a.target, currentTargetEl: a.currentTarget
+			}
+			))
+		}
+		, onTouchMove:function(a) {
+			this.captureSettings.preventDefaultTouchEvents&&a.preventDefault();
+			if(!this.isGesture||!this.captureSettings.gesture) {
+				var d=b.Events.getTouchEvent(a).touches;
+				b.Events.fire(this, {
+					type: b.TouchElement.EventTypes.onTouch, target: this, action: b.TouchElement.ActionTypes.touchMove, point: this.getTouchPoint(d), targetEl: a.target, currentTargetEl: a.currentTarget
+				}
+				)
+			}
+		}
+		, onTouchEnd:function(a) {
+			if(!this.isGesture||!this.captureSettings.gesture) {
+				this.captureSettings.preventDefaultTouchEvents&&a.preventDefault();
+				var d=b.Events.getTouchEvent(a);
+				this.touchEndPoint=this.getTouchPoint(!b.isNothing(d.changedTouches)?d.changedTouches: d.touches);
+				b.Events.fire(this, {
+					type: b.TouchElement.EventTypes.onTouch, target: this, action: b.TouchElement.ActionTypes.touchEnd, point: this.touchEndPoint, targetEl: a.target, currentTargetEl: a.currentTarget
+				}
+				);
+				this.fireTouchEvent(a)
+			}
+		}
+		, onMouseDown:function(a) {
+			a.preventDefault();
+			b.Events.remove(this.el, "touchstart", this.mouseDownHandler);
+			b.Events.remove(this.el, "touchmove", this.touchMoveHandler);
+			b.Events.remove(this.el, "touchend", this.touchEndHandler);
+			this.captureSettings.move&&b.Events.add(this.el, "mousemove", this.mouseMoveHandler);
+			b.Events.add(this.el, "mouseup", this.mouseUpHandler);
+			b.Events.add(this.el, "mouseout", this.mouseOutHandler);
+			this.touchStartTime=new Date;
+			this.isGesture=!1;
+			this.touchStartPoint=b.Events.getMousePosition(a);
+			b.Events.fire(this, {
+				type: b.TouchElement.EventTypes.onTouch, target: this, action: b.TouchElement.ActionTypes.touchStart, point: this.touchStartPoint, targetEl: a.target, currentTargetEl: a.currentTarget
+			}
+			)
+		}
+		, onMouseMove:function(a) {
+			a.preventDefault();
+			b.Events.fire(this, {
+				type: b.TouchElement.EventTypes.onTouch, target: this, action: b.TouchElement.ActionTypes.touchMove, point: b.Events.getMousePosition(a), targetEl: a.target, currentTargetEl: a.currentTarget
+			}
+			)
+		}
+		, onMouseUp:function(a) {
+			a.preventDefault();
+			this.captureSettings.move&&b.Events.remove(this.el, "mousemove", this.mouseMoveHandler);
+			b.Events.remove(this.el, "mouseup", this.mouseUpHandler);
+			b.Events.remove(this.el, "mouseout", this.mouseOutHandler);
+			this.touchEndPoint=b.Events.getMousePosition(a);
+			b.Events.fire(this, {
+				type: b.TouchElement.EventTypes.onTouch, target: this, action: b.TouchElement.ActionTypes.touchEnd, point: this.touchEndPoint, targetEl: a.target, currentTargetEl: a.currentTarget
+			}
+			);
+			this.fireTouchEvent(a)
+		}
+		, onMouseOut:function(a) {
+			var d=a.relatedTarget;
+			if(!(this.el===d||b.DOM.isChildOf(d, this.el))) {
+				a.preventDefault(), this.captureSettings.move&&b.Events.remove(this.el, "mousemove", this.mouseMoveHandler), b.Events.remove(this.el, "mouseup", this.mouseUpHandler), b.Events.remove(this.el, "mouseout", this.mouseOutHandler), this.touchEndPoint=b.Events.getMousePosition(a), b.Events.fire(this, {
+					type: b.TouchElement.EventTypes.onTouch, target: this, action: b.TouchElement.ActionTypes.touchEnd, point: this.touchEndPoint, targetEl: a.target, currentTargetEl: a.currentTarget
+				}
+				), this.fireTouchEvent(a)
+			}
+		}
+		, onGestureStart:function(a) {
+			a.preventDefault();
+			var d=b.Events.getTouchEvent(a);
+			b.Events.fire(this, {
+				type: b.TouchElement.EventTypes.onTouch, target: this, action: b.TouchElement.ActionTypes.gestureStart, scale: d.scale, rotation: d.rotation, targetEl: a.target, currentTargetEl: a.currentTarget
+			}
+			)
+		}
+		, onGestureChange:function(a) {
+			a.preventDefault();
+			var d=b.Events.getTouchEvent(a);
+			b.Events.fire(this, {
+				type: b.TouchElement.EventTypes.onTouch, target: this, action: b.TouchElement.ActionTypes.gestureChange, scale: d.scale, rotation: d.rotation, targetEl: a.target, currentTargetEl: a.currentTarget
+			}
+			)
+		}
+		, onGestureEnd:function(a) {
+			a.preventDefault();
+			var d=b.Events.getTouchEvent(a);
+			b.Events.fire(this, {
+				type: b.TouchElement.EventTypes.onTouch, target: this, action: b.TouchElement.ActionTypes.gestureEnd, scale: d.scale, rotation: d.rotation, targetEl: a.target, currentTargetEl: a.currentTarget
+			}
+			)
+		}
+	}
+	)
+}
+
+)(window, window.klass, window.Code.Util);
+(function(f, c, b) {
+	b.registerNamespace("Code.PhotoSwipe.Image");
+	f.Code.PhotoSwipe.Image.EventTypes= {
+		onLoad: "onLoad", onError: "onError"
+	}
+}
+
+)(window, window.klass, window.Code.Util);
+(function(h, g, c) {
+	c.registerNamespace("Code.PhotoSwipe.Image");
+	var f=h.Code.PhotoSwipe;
+	f.Image.ImageClass=g( {
+		refObj:null, imageEl:null, src:null, caption:null, metaData:null, imageLoadHandler:null, imageErrorHandler:null, dispose:function() {
+			var a;
+			this.shrinkImage();
+			for(a in this) {
+				c.objectHasProperty(this, a)&&(this[a]=null)
+			}
+		}
+		, initialize:function(e, i, k, j) {
+			this.refObj=e;
+			this.src=this.originalSrc=i;
+			this.caption=k;
+			this.metaData=j;
+			this.imageEl=new h.Image;
+			this.imageLoadHandler=this.onImageLoad.bind(this);
+			this.imageErrorHandler=this.onImageError.bind(this)
+		}
+		, load:function() {
+			this.imageEl.originalSrc=c.coalesce(this.imageEl.originalSrc, "");
+			this.imageEl.originalSrc===this.src?this.imageEl.isError?c.Events.fire(this, {
+				type: f.Image.EventTypes.onError, target: this
+			}
+			):c.Events.fire(this, {
+				type: f.Image.EventTypes.onLoad, target: this
+			}
+			):(this.imageEl.isError=!1, this.imageEl.isLoading=!0, this.imageEl.naturalWidth=null, this.imageEl.naturalHeight=null, this.imageEl.isLandscape=!1, this.imageEl.onload=this.imageLoadHandler, this.imageEl.onerror=this.imageErrorHandler, this.imageEl.onabort=this.imageErrorHandler, this.imageEl.originalSrc=this.src, this.imageEl.src=this.src)
+		}
+		, shrinkImage:function() {
+			if(!c.isNothing(this.imageEl)&&this.imageEl.src.indexOf(this.src)>-1) {
+				this.imageEl.src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=", c.isNothing(this.imageEl.parentNode)||c.DOM.removeChild(this.imageEl, this.imageEl.parentNode)
+			}
+		}
+		, onImageLoad:function() {
+			this.imageEl.onload=null;
+			this.imageEl.naturalWidth=c.coalesce(this.imageEl.naturalWidth, this.imageEl.width);
+			this.imageEl.naturalHeight=c.coalesce(this.imageEl.naturalHeight, this.imageEl.height);
+			this.imageEl.isLandscape=this.imageEl.naturalWidth>this.imageEl.naturalHeight;
+			this.imageEl.isLoading=!1;
+			c.Events.fire(this, {
+				type: f.Image.EventTypes.onLoad, target: this
+			}
+			)
+		}
+		, onImageError:function() {
+			this.imageEl.onload=null;
+			this.imageEl.onerror=null;
+			this.imageEl.onabort=null;
+			this.imageEl.isLoading=!1;
+			this.imageEl.isError=!0;
+			c.Events.fire(this, {
+				type: f.Image.EventTypes.onError, target: this
+			}
+			)
+		}
+	}
+	)
+}
+
+)(window, window.klass, window.Code.Util);
+(function(f, c, b) {
+	b.registerNamespace("Code.PhotoSwipe.Cache");
+	f=f.Code.PhotoSwipe;
+	f.Cache.Mode= {
+		normal: "normal", aggressive: "aggressive"
+	}
+	;
+	f.Cache.Functions= {
+		getImageSource:function(d) {
+			return d.href
+		}
+		, getImageCaption:function(a) {
+			if(a.nodeName==="IMG") {
+				return b.DOM.getAttribute(a, "alt")
+			}
+			var d, h, e;
+			d=0;
+			for(h=a.childNodes.length;
+			d<h;
+			d++) {
+				if(e=a.childNodes[d], a.childNodes[d].nodeName==="IMG") {
+					return b.DOM.getAttribute(e, "alt")
+				}
+			}
+		}
+		, getImageMetaData:function() {
+			return {}
+		}
+	}
+}
+
+)(window, window.klass, window.Code.Util);
+(function(h, g, c) {
+	c.registerNamespace("Code.PhotoSwipe.Cache");
+	var f=h.Code.PhotoSwipe;
+	f.Cache.CacheClass=g( {
+		images:null, settings:null, dispose:function() {
+			var d, a, e;
+			if(!c.isNothing(this.images)) {
+				a=0;
+				for(e=this.images.length;
+				a<e;
+				a++) {
+					this.images[a].dispose()
+				}
+				this.images.length=0
+			}
+			for(d in this) {
+				c.objectHasProperty(this, d)&&(this[d]=null)
+			}
+		}
+		, initialize:function(b, n) {
+			var m, i, j, o, q, p;
+			this.settings=n;
+			this.images=[];
+			m=0;
+			for(i=b.length;
+			m<i;
+			m++) {
+				j=b[m], o=this.settings.getImageSource(j), q=this.settings.getImageCaption(j), p=this.settings.getImageMetaData(j), this.images.push(new f.Image.ImageClass(j, o, q, p))
+			}
+		}
+		, getImages:function(a) {
+			var k, j, b=[], i;
+			k=0;
+			for(j=a.length;
+			k<j;
+			k++) {
+				i=this.images[a[k]];
+				if(this.settings.cacheMode===f.Cache.Mode.aggressive) {
+					i.cacheDoNotShrink=!0
+				}
+				b.push(i)
+			}
+			if(this.settings.cacheMode===f.Cache.Mode.aggressive) {
+				k=0;
+				for(j=this.images.length;
+				k<j;
+				k++) {
+					i=this.images[k], c.objectHasProperty(i, "cacheDoNotShrink")?delete i.cacheDoNotShrink: i.shrinkImage()
+				}
+			}
+			return b
+		}
+	}
+	)
+}
+
+)(window, window.klass, window.Code.Util, window.Code.PhotoSwipe.Image);
+(function(f, c, b) {
+	b.registerNamespace("Code.PhotoSwipe.DocumentOverlay");
+	f.Code.PhotoSwipe.DocumentOverlay.CssClasses= {
+		documentOverlay: "ps-document-overlay"
+	}
+}
+
+)(window, window.klass, window.Code.Util);
+(function(h, g, c) {
+	c.registerNamespace("Code.PhotoSwipe.DocumentOverlay");
+	var f=h.Code.PhotoSwipe;
+	f.DocumentOverlay.DocumentOverlayClass=g( {
+		el:null, settings:null, initialBodyHeight:null, dispose:function() {
+			var a;
+			c.Animation.stop(this.el);
+			c.DOM.removeChild(this.el, this.el.parentNode);
+			for(a in this) {
+				c.objectHasProperty(this, a)&&(this[a]=null)
+			}
+		}
+		, initialize:function(a) {
+			this.settings=a;
+			this.el=c.DOM.createElement("div", {
+				"class": f.DocumentOverlay.CssClasses.documentOverlay
+			}
+			, "");
+			c.DOM.setStyle(this.el, {
+				display: "block", position: "absolute", left: 0, top: 0, zIndex: this.settings.zIndex
+			}
+			);
+			c.DOM.hide(this.el);
+			this.settings.target===h?c.DOM.appendToBody(this.el):c.DOM.appendChild(this.el, this.settings.target);
+			c.Animation.resetTranslate(this.el);
+			this.initialBodyHeight=c.DOM.bodyOuterHeight()
+		}
+		, resetPosition:function() {
+			var d, a, e;
+			if(this.settings.target===h) {
+				d=c.DOM.windowWidth();
+				a=c.DOM.bodyOuterHeight()*2;
+				e=this.settings.jQueryMobile?c.DOM.windowScrollTop()+"px": "0px";
+				if(a<1) {
+					a=this.initialBodyHeight
+				}
+				c.DOM.windowHeight()>a&&(a=c.DOM.windowHeight())
+			}
+			else {
+				d=c.DOM.width(this.settings.target), a=c.DOM.height(this.settings.target), e="0px"
+			}
+			c.DOM.setStyle(this.el, {
+				width: d, height: a, top: e
+			}
+			)
+		}
+		, fadeIn:function(d, a) {
+			this.resetPosition();
+			c.DOM.setStyle(this.el, "opacity", 0);
+			c.DOM.show(this.el);
+			c.Animation.fadeIn(this.el, d, a)
+		}
+	}
+	)
+}
+
+)(window, window.klass, window.Code.Util);
+(function(f, c, b) {
+	b.registerNamespace("Code.PhotoSwipe.Carousel");
+	f=f.Code.PhotoSwipe;
+	f.Carousel.EventTypes= {
+		onSlideByEnd: "PhotoSwipeCarouselOnSlideByEnd", onSlideshowStart: "PhotoSwipeCarouselOnSlideshowStart", onSlideshowStop: "PhotoSwipeCarouselOnSlideshowStop"
+	}
+	;
+	f.Carousel.CssClasses= {
+		carousel: "ps-carousel", content: "ps-carousel-content", item: "ps-carousel-item", itemLoading: "ps-carousel-item-loading", itemError: "ps-carousel-item-error"
+	}
+	;
+	f.Carousel.SlideByAction= {
+		previous: "previous", current: "current", next: "next"
+	}
+}
+
+)(window, window.klass, window.Code.Util);
+(function(h, g, c) {
+	c.registerNamespace("Code.PhotoSwipe.Carousel");
+	var f=h.Code.PhotoSwipe;
+	f.Carousel.CarouselClass=g( {
+		el:null, contentEl:null, settings:null, cache:null, slideByEndHandler:null, currentCacheIndex:null, isSliding:null, isSlideshowActive:null, lastSlideByAction:null, touchStartPoint:null, touchStartPosition:null, imageLoadHandler:null, imageErrorHandler:null, slideshowTimeout:null, dispose:function() {
+			var a, d, b;
+			d=0;
+			for(b=this.cache.images.length;
+			d<b;
+			d++) {
+				c.Events.remove(this.cache.images[d], f.Image.EventTypes.onLoad, this.imageLoadHandler), c.Events.remove(this.cache.images[d], f.Image.EventTypes.onError, this.imageErrorHandler)
+			}
+			this.stopSlideshow();
+			c.Animation.stop(this.el);
+			c.DOM.removeChild(this.el, this.el.parentNode);
+			for(a in this) {
+				c.objectHasProperty(this, a)&&(this[a]=null)
+			}
+		}
+		, initialize:function(a, i) {
+			var e, b, k;
+			this.cache=a;
+			this.settings=i;
+			this.slideByEndHandler=this.onSlideByEnd.bind(this);
+			this.imageLoadHandler=this.onImageLoad.bind(this);
+			this.imageErrorHandler=this.onImageError.bind(this);
+			this.currentCacheIndex=0;
+			this.isSlideshowActive=this.isSliding=!1;
+			if(this.cache.images.length<3) {
+				this.settings.loop=!1
+			}
+			this.el=c.DOM.createElement("div", {
+				"class": f.Carousel.CssClasses.carousel
+			}
+			, "");
+			c.DOM.setStyle(this.el, {
+				display: "block", position: "absolute", left: 0, top: 0, overflow: "hidden", zIndex: this.settings.zIndex
+			}
+			);
+			c.DOM.hide(this.el);
+			this.contentEl=c.DOM.createElement("div", {
+				"class": f.Carousel.CssClasses.content
+			}
+			, "");
+			c.DOM.setStyle(this.contentEl, {
+				display: "block", position: "absolute", left: 0, top: 0
+			}
+			);
+			c.DOM.appendChild(this.contentEl, this.el);
+			b=a.images.length<3?a.images.length:3;
+			for(e=0;
+			e<b;
+			e++) {
+				k=c.DOM.createElement("div", {
+					"class": f.Carousel.CssClasses.item+" "+f.Carousel.CssClasses.item+"-"+e
+				}
+				, ""), c.DOM.setAttribute(k, "style", "float: left;"), c.DOM.setStyle(k, {
+					display: "block", position: "relative", left: 0, top: 0, overflow: "hidden"
+				}
+				), this.settings.margin>0&&c.DOM.setStyle(k, {
+					marginRight: this.settings.margin+"px"
+				}
+				), c.DOM.appendChild(k, this.contentEl)
+			}
+			this.settings.target===h?c.DOM.appendToBody(this.el):c.DOM.appendChild(this.el, this.settings.target)
+		}
+		, resetPosition:function() {
+			var a, i, e, b, l, k;
+			this.settings.target===h?(a=c.DOM.windowWidth(), i=c.DOM.windowHeight(), e=c.DOM.windowScrollTop()+"px"): (a=c.DOM.width(this.settings.target), i=c.DOM.height(this.settings.target), e="0px");
+			b=this.settings.margin>0?a+this.settings.margin: a;
+			l=c.DOM.find("."+f.Carousel.CssClasses.item, this.contentEl);
+			b*=l.length;
+			c.DOM.setStyle(this.el, {
+				top: e, width: a, height: i
+			}
+			);
+			c.DOM.setStyle(this.contentEl, {
+				width: b, height: i
+			}
+			);
+			e=0;
+			for(b=l.length;
+			e<b;
+			e++) {
+				k=l[e], c.DOM.setStyle(k, {
+					width: a, height: i
+				}
+				), k=c.DOM.find("img", k)[0], c.isNothing(k)||this.resetImagePosition(k)
+			}
+			this.setContentLeftPosition()
+		}
+		, resetImagePosition:function(i) {
+			if(!c.isNothing(i)) {
+				c.DOM.getAttribute(i, "src");
+				var a, l, j, k=c.DOM.width(this.el), m=c.DOM.height(this.el);
+				this.settings.imageScaleMethod==="fitNoUpscale"?(l=i.naturalWidth, j=i.naturalHeight, l>k&&(a=k/l, l=Math.round(l*a), j=Math.round(j*a)), j>m&&(a=m/j, j=Math.round(j*a), l=Math.round(l*a))): (a=i.isLandscape?k/i.naturalWidth: m/i.naturalHeight, l=Math.round(i.naturalWidth*a), j=Math.round(i.naturalHeight*a), this.settings.imageScaleMethod==="zoom"?(a=1, j<m?a=m/j: l<k&&(a=k/l), a!==1&&(l=Math.round(l*a), j=Math.round(j*a))): this.settings.imageScaleMethod==="fit"&&(a=1, l>k?a=k/l: j>m&&(a=m/j), a!==1&&(l=Math.round(l*a), j=Math.round(j*a))));
+				c.DOM.setStyle(i, {
+					position: "absolute", width: l, height: j, top: Math.round((m-j)/2)+"px", left: Math.round((k-l)/2)+"px", display: "block"
+				}
+				)
+			}
+		}
+		, setContentLeftPosition:function() {
+			var e, a, i;
+			e=this.settings.target===h?c.DOM.windowWidth(): c.DOM.width(this.settings.target);
+			a=this.getItemEls();
+			i=0;
+			this.settings.loop?i=(e+this.settings.margin)*-1: this.currentCacheIndex===this.cache.images.length-1?i=(a.length-1)*(e+this.settings.margin)*-1: this.currentCacheIndex>0&&(i=(e+this.settings.margin)*-1);
+			c.DOM.setStyle(this.contentEl, {
+				left: i+"px"
+			}
+			)
+		}
+		, show:function(a) {
+			this.currentCacheIndex=a;
+			this.resetPosition();
+			this.setImages(!1);
+			c.DOM.show(this.el);
+			c.Animation.resetTranslate(this.contentEl);
+			var a=this.getItemEls(), b, e;
+			b=0;
+			for(e=a.length;
+			b<e;
+			b++) {
+				c.Animation.resetTranslate(a[b])
+			}
+			c.Events.fire(this, {
+				type: f.Carousel.EventTypes.onSlideByEnd, target: this, action: f.Carousel.SlideByAction.current, cacheIndex: this.currentCacheIndex
+			}
+			)
+		}
+		, setImages:function(i) {
+			var j, k=this.getItemEls();
+			j=this.currentCacheIndex+1;
+			var l=this.currentCacheIndex-1;
+			this.settings.loop?(j>this.cache.images.length-1&&(j=0), l<0&&(l=this.cache.images.length-1), j=this.cache.getImages([l, this.currentCacheIndex, j]), i||this.addCacheImageToItemEl(j[1], k[1]), this.addCacheImageToItemEl(j[2], k[2]), this.addCacheImageToItemEl(j[0], k[0])): k.length===1?i||(j=this.cache.getImages([this.currentCacheIndex]), this.addCacheImageToItemEl(j[0], k[0])): k.length===2?this.currentCacheIndex===0?(j=this.cache.getImages([this.currentCacheIndex, this.currentCacheIndex+1]), i||this.addCacheImageToItemEl(j[0], k[0]), this.addCacheImageToItemEl(j[1], k[1])): (j=this.cache.getImages([this.currentCacheIndex-1, this.currentCacheIndex]), i||this.addCacheImageToItemEl(j[1], k[1]), this.addCacheImageToItemEl(j[0], k[0])): this.currentCacheIndex===0?(j=this.cache.getImages([this.currentCacheIndex, this.currentCacheIndex+1, this.currentCacheIndex+2]), i||this.addCacheImageToItemEl(j[0], k[0]), this.addCacheImageToItemEl(j[1], k[1]), this.addCacheImageToItemEl(j[2], k[2])): (this.currentCacheIndex===this.cache.images.length-1?(j=this.cache.getImages([this.currentCacheIndex-2, this.currentCacheIndex-1, this.currentCacheIndex]), i||this.addCacheImageToItemEl(j[2], k[2]), this.addCacheImageToItemEl(j[1], k[1])): (j=this.cache.getImages([this.currentCacheIndex-1, this.currentCacheIndex, this.currentCacheIndex+1]), i||this.addCacheImageToItemEl(j[1], k[1]), this.addCacheImageToItemEl(j[2], k[2])), this.addCacheImageToItemEl(j[0], k[0]))
+		}
+		, addCacheImageToItemEl:function(a, b) {
+			c.DOM.removeClass(b, f.Carousel.CssClasses.itemError);
+			c.DOM.addClass(b, f.Carousel.CssClasses.itemLoading);
+			c.DOM.removeChildren(b);
+			c.DOM.setStyle(a.imageEl, {
+				display: "none"
+			}
+			);
+			c.DOM.appendChild(a.imageEl, b);
+			c.Animation.resetTranslate(a.imageEl);
+			c.Events.add(a, f.Image.EventTypes.onLoad, this.imageLoadHandler);
+			c.Events.add(a, f.Image.EventTypes.onError, this.imageErrorHandler);
+			a.load()
+		}
+		, slideCarousel:function(a, b, e) {
+			if(!this.isSliding) {
+				var k, l;
+				k=this.settings.target===h?c.DOM.windowWidth()+this.settings.margin: c.DOM.width(this.settings.target)+this.settings.margin;
+				e=c.coalesce(e, this.settings.slideSpeed);
+				if(!(h.Math.abs(l)<1)) {
+					switch(b) {
+						case c.TouchElement.ActionTypes.swipeLeft: a=k*-1;
+						break;
+						case c.TouchElement.ActionTypes.swipeRight: a=k;
+						break;
+						default: l=a.x-this.touchStartPoint.x, a=h.Math.abs(l)>k/2?l>0?k: k*-1: 0
+					}
+					this.lastSlideByAction=a<0?f.Carousel.SlideByAction.next:a>0?f.Carousel.SlideByAction.previous:f.Carousel.SlideByAction.current;
+					if(!this.settings.loop&&(this.lastSlideByAction===f.Carousel.SlideByAction.previous&&this.currentCacheIndex===0||this.lastSlideByAction===f.Carousel.SlideByAction.next&&this.currentCacheIndex===this.cache.images.length-1)) {
+						a=0, this.lastSlideByAction=f.Carousel.SlideByAction.current
+					}
+					this.isSliding=!0;
+					this.doSlideCarousel(a, e)
+				}
+			}
+		}
+		, moveCarousel:function(b) {
+			this.isSliding||this.settings.enableDrag&&this.doMoveCarousel(b.x-this.touchStartPoint.x)
+		}
+		, getItemEls:function() {
+			return c.DOM.find("."+f.Carousel.CssClasses.item, this.contentEl)
+		}
+		, previous:function() {
+			this.stopSlideshow();
+			this.slideCarousel( {
+				x: 0, y: 0
+			}
+			, c.TouchElement.ActionTypes.swipeRight, this.settings.nextPreviousSlideSpeed)
+		}
+		, next:function() {
+			this.stopSlideshow();
+			this.slideCarousel( {
+				x: 0, y: 0
+			}
+			, c.TouchElement.ActionTypes.swipeLeft, this.settings.nextPreviousSlideSpeed)
+		}
+		, slideshowNext:function() {
+			this.slideCarousel( {
+				x: 0, y: 0
+			}
+			, c.TouchElement.ActionTypes.swipeLeft)
+		}
+		, startSlideshow:function() {
+			this.stopSlideshow();
+			this.isSlideshowActive=!0;
+			this.slideshowTimeout=h.setTimeout(this.slideshowNext.bind(this), this.settings.slideshowDelay);
+			c.Events.fire(this, {
+				type: f.Carousel.EventTypes.onSlideshowStart, target: this
+			}
+			)
+		}
+		, stopSlideshow:function() {
+			if(!c.isNothing(this.slideshowTimeout)) {
+				h.clearTimeout(this.slideshowTimeout), this.slideshowTimeout=null, this.isSlideshowActive=!1, c.Events.fire(this, {
+					type: f.Carousel.EventTypes.onSlideshowStop, target: this
+				}
+				)
+			}
+		}
+		, onSlideByEnd:function() {
+			if(!c.isNothing(this.isSliding)) {
+				var a=this.getItemEls();
+				this.isSliding=!1;
+				this.lastSlideByAction===f.Carousel.SlideByAction.next?this.currentCacheIndex+=1: this.lastSlideByAction===f.Carousel.SlideByAction.previous&&(this.currentCacheIndex-=1);
+				if(this.settings.loop) {
+					if(this.lastSlideByAction===f.Carousel.SlideByAction.next?c.DOM.appendChild(a[0], this.contentEl): this.lastSlideByAction===f.Carousel.SlideByAction.previous&&c.DOM.insertBefore(a[a.length-1], a[0], this.contentEl), this.currentCacheIndex<0) {
+						this.currentCacheIndex=this.cache.images.length-1
+					}
+					else {
+						if(this.currentCacheIndex===this.cache.images.length) {
+							this.currentCacheIndex=0
+						}
+					}
+				}
+				else {
+					this.cache.images.length>3&&(this.currentCacheIndex>1&&this.currentCacheIndex<this.cache.images.length-2?this.lastSlideByAction===f.Carousel.SlideByAction.next?c.DOM.appendChild(a[0], this.contentEl): this.lastSlideByAction===f.Carousel.SlideByAction.previous&&c.DOM.insertBefore(a[a.length-1], a[0], this.contentEl): this.currentCacheIndex===1?this.lastSlideByAction===f.Carousel.SlideByAction.previous&&c.DOM.insertBefore(a[a.length-1], a[0], this.contentEl): this.currentCacheIndex===this.cache.images.length-2&&this.lastSlideByAction===f.Carousel.SlideByAction.next&&c.DOM.appendChild(a[0], this.contentEl))
+				}
+				this.lastSlideByAction!==f.Carousel.SlideByAction.current&&(this.setContentLeftPosition(), this.setImages(!0));
+				c.Events.fire(this, {
+					type: f.Carousel.EventTypes.onSlideByEnd, target: this, action: this.lastSlideByAction, cacheIndex: this.currentCacheIndex
+				}
+				);
+				this.isSlideshowActive&&(this.lastSlideByAction!==f.Carousel.SlideByAction.current?this.startSlideshow():this.stopSlideshow())
+			}
+		}
+		, onTouch:function(a, e) {
+			this.stopSlideshow();
+			switch(a) {
+				case c.TouchElement.ActionTypes.touchStart: this.touchStartPoint=e;
+				this.touchStartPosition= {
+					x: h.parseInt(c.DOM.getStyle(this.contentEl, "left"), 0), y: h.parseInt(c.DOM.getStyle(this.contentEl, "top"), 0)
+				}
+				;
+				break;
+				case c.TouchElement.ActionTypes.touchMove:this.moveCarousel(e);
+				break;
+				case c.TouchElement.ActionTypes.touchMoveEnd:case c.TouchElement.ActionTypes.swipeLeft:case c.TouchElement.ActionTypes.swipeRight:this.slideCarousel(e, a)
+			}
+		}
+		, onImageLoad:function(a) {
+			a=a.target;
+			c.isNothing(a.imageEl.parentNode)||(c.DOM.removeClass(a.imageEl.parentNode, f.Carousel.CssClasses.itemLoading), this.resetImagePosition(a.imageEl));
+			c.Events.remove(a, f.Image.EventTypes.onLoad, this.imageLoadHandler);
+			c.Events.remove(a, f.Image.EventTypes.onError, this.imageErrorHandler)
+		}
+		, onImageError:function(a) {
+			a=a.target;
+			c.isNothing(a.imageEl.parentNode)||(c.DOM.removeClass(a.imageEl.parentNode, f.Carousel.CssClasses.itemLoading), c.DOM.addClass(a.imageEl.parentNode, f.Carousel.CssClasses.itemError));
+			c.Events.remove(a, f.Image.EventTypes.onLoad, this.imageLoadHandler);
+			c.Events.remove(a, f.Image.EventTypes.onError, this.imageErrorHandler)
+		}
+	}
+	)
+}
+
+)(window, window.klass, window.Code.Util);
+(function(f, c, b) {
+	b.registerNamespace("Code.PhotoSwipe.Carousel");
+	c=f.Code.PhotoSwipe;
+	c.Carousel.CarouselClass=c.Carousel.CarouselClass.extend( {
+		getStartingPos:function() {
+			var a=this.touchStartPosition;
+			b.isNothing(a)&&(a= {
+				x: f.parseInt(b.DOM.getStyle(this.contentEl, "left"), 0), y: f.parseInt(b.DOM.getStyle(this.contentEl, "top"), 0)
+			}
+			);
+			return a
+		}
+		, doMoveCarousel:function(a) {
+			var d;
+			b.Browser.isCSSTransformSupported?(d= {}
+			, d[b.Animation._transitionPrefix+"Property"]="all", d[b.Animation._transitionPrefix+"Duration"]="", d[b.Animation._transitionPrefix+"TimingFunction"]="", d[b.Animation._transitionPrefix+"Delay"]="0", d[b.Animation._transformLabel]=b.Browser.is3dSupported?"translate3d("+a+"px, 0px, 0px)": "translate("+a+"px, 0px)", b.DOM.setStyle(this.contentEl, d)): b.isNothing(f.jQuery)||f.jQuery(this.contentEl).stop().css("left", this.getStartingPos().x+a+"px")
+		}
+		, doSlideCarousel:function(a, e) {
+			var g;
+			if(e<=0) {
+				this.slideByEndHandler()
+			}
+			else {
+				if(b.Browser.isCSSTransformSupported) {
+					g=b.coalesce(this.contentEl.style.webkitTransform, this.contentEl.style.MozTransform, this.contentEl.style.transform, ""), g.indexOf("translate3d("+a)===0?this.slideByEndHandler(): g.indexOf("translate("+a)===0?this.slideByEndHandler(): b.Animation.slideBy(this.contentEl, a, 0, e, this.slideByEndHandler, this.settings.slideTimingFunction)
+				}
+				else {
+					if(!b.isNothing(f.jQuery)) {
+						g= {
+							left: this.getStartingPos().x+a+"px"
+						}
+						;
+						if(this.settings.animationTimingFunction==="ease-out") {
+							this.settings.animationTimingFunction="easeOutQuad"
+						}
+						if(b.isNothing(f.jQuery.easing[this.settings.animationTimingFunction])) {
+							this.settings.animationTimingFunction="linear"
+						}
+						f.jQuery(this.contentEl).animate(g, this.settings.slideSpeed, this.settings.animationTimingFunction, this.slideByEndHandler)
+					}
+				}
+			}
+		}
+	}
+	)
+}
+
+)(window, window.klass, window.Code.Util, window.Code.PhotoSwipe.TouchElement);
+(function(h, g, c) {
+	c.registerNamespace("Code.PhotoSwipe.Toolbar");
+	var f=h.Code.PhotoSwipe;
+	f.Toolbar.CssClasses= {
+		toolbar: "ps-toolbar", toolbarContent: "ps-toolbar-content", toolbarTop: "ps-toolbar-top", caption: "ps-caption", captionBottom: "ps-caption-bottom", captionContent: "ps-caption-content", close: "ps-toolbar-close", play: "ps-toolbar-play", previous: "ps-toolbar-previous", previousDisabled: "ps-toolbar-previous-disabled", next: "ps-toolbar-next", nextDisabled: "ps-toolbar-next-disabled"
+	}
+	;
+	f.Toolbar.ToolbarAction= {
+		close: "close", play: "play", next: "next", previous: "previous", none: "none"
+	}
+	;
+	f.Toolbar.EventTypes= {
+		onTap: "PhotoSwipeToolbarOnClick", onBeforeShow: "PhotoSwipeToolbarOnBeforeShow", onShow: "PhotoSwipeToolbarOnShow", onBeforeHide: "PhotoSwipeToolbarOnBeforeHide", onHide: "PhotoSwipeToolbarOnHide"
+	}
+	;
+	f.Toolbar.getToolbar=function() {
+		return'<div class="'+f.Toolbar.CssClasses.close+'"><div class="'+f.Toolbar.CssClasses.toolbarContent+'"></div></div><div class="'+f.Toolbar.CssClasses.play+'"><div class="'+f.Toolbar.CssClasses.toolbarContent+'"></div></div><div class="'+f.Toolbar.CssClasses.previous+'"><div class="'+f.Toolbar.CssClasses.toolbarContent+'"></div></div><div class="'+f.Toolbar.CssClasses.next+'"><div class="'+f.Toolbar.CssClasses.toolbarContent+'"></div></div>'
+	}
+}
+
+)(window, window.klass, window.Code.Util);
+(function(h, g, c) {
+	c.registerNamespace("Code.PhotoSwipe.Toolbar");
+	var f=h.Code.PhotoSwipe;
+	f.Toolbar.ToolbarClass=g( {
+		toolbarEl:null, closeEl:null, playEl:null, previousEl:null, nextEl:null, captionEl:null, captionContentEl:null, currentCaption:null, settings:null, cache:null, timeout:null, isVisible:null, fadeOutHandler:null, touchStartHandler:null, touchMoveHandler:null, clickHandler:null, dispose:function() {
+			var a;
+			this.clearTimeout();
+			this.removeEventHandlers();
+			c.Animation.stop(this.toolbarEl);
+			c.Animation.stop(this.captionEl);
+			c.DOM.removeChild(this.toolbarEl, this.toolbarEl.parentNode);
+			c.DOM.removeChild(this.captionEl, this.captionEl.parentNode);
+			for(a in this) {
+				c.objectHasProperty(this, a)&&(this[a]=null)
+			}
+		}
+		, initialize:function(a, b) {
+			var e;
+			this.settings=b;
+			this.cache=a;
+			this.isVisible=!1;
+			this.fadeOutHandler=this.onFadeOut.bind(this);
+			this.touchStartHandler=this.onTouchStart.bind(this);
+			this.touchMoveHandler=this.onTouchMove.bind(this);
+			this.clickHandler=this.onClick.bind(this);
+			e=f.Toolbar.CssClasses.toolbar;
+			this.settings.captionAndToolbarFlipPosition&&(e=e+" "+f.Toolbar.CssClasses.toolbarTop);
+			this.toolbarEl=c.DOM.createElement("div", {
+				"class": e
+			}
+			, this.settings.getToolbar());
+			c.DOM.setStyle(this.toolbarEl, {
+				left: 0, position: "absolute", overflow: "hidden", zIndex: this.settings.zIndex
+			}
+			);
+			this.settings.target===h?c.DOM.appendToBody(this.toolbarEl):c.DOM.appendChild(this.toolbarEl, this.settings.target);
+			c.DOM.hide(this.toolbarEl);
+			this.closeEl=c.DOM.find("."+f.Toolbar.CssClasses.close, this.toolbarEl)[0];
+			this.settings.preventHide&&!c.isNothing(this.closeEl)&&c.DOM.hide(this.closeEl);
+			this.playEl=c.DOM.find("."+f.Toolbar.CssClasses.play, this.toolbarEl)[0];
+			this.settings.preventSlideshow&&!c.isNothing(this.playEl)&&c.DOM.hide(this.playEl);
+			this.nextEl=c.DOM.find("."+f.Toolbar.CssClasses.next, this.toolbarEl)[0];
+			this.previousEl=c.DOM.find("."+f.Toolbar.CssClasses.previous, this.toolbarEl)[0];
+			e=f.Toolbar.CssClasses.caption;
+			this.settings.captionAndToolbarFlipPosition&&(e=e+" "+f.Toolbar.CssClasses.captionBottom);
+			this.captionEl=c.DOM.createElement("div", {
+				"class": e
+			}
+			, "");
+			c.DOM.setStyle(this.captionEl, {
+				left: 0, position: "absolute", overflow: "hidden", zIndex: this.settings.zIndex
+			}
+			);
+			this.settings.target===h?c.DOM.appendToBody(this.captionEl):c.DOM.appendChild(this.captionEl, this.settings.target);
+			c.DOM.hide(this.captionEl);
+			this.captionContentEl=c.DOM.createElement("div", {
+				"class": f.Toolbar.CssClasses.captionContent
+			}
+			, "");
+			var i=document.createElement("div");
+			i.className="fimg";
+			i.innerHTML="&lt; 第一张";
+			var j=document.createElement("div");
+			j.className="limg";
+			$(j).attr("num", photoAlbum.allPicNum);
+			j.innerHTML="最后一张 &gt;";
+			$(i).on("click", function() {
+				photoAlbum.photoView.hide();
+				photoAlbum.photoView.show(0)
+			}
+			);
+			$(j).on("click", function() {
+				var d=$(this).attr("num");
+				photoAlbum.photoView.hide();
+				photoAlbum.photoView.show(d-1)
+			}
+			);
+			this.captionEl.appendChild(i);
+			this.captionEl.appendChild(j);
+			console.log(this);
+			c.DOM.appendChild(this.captionContentEl, this.captionEl);
+			this.addEventHandlers()
+		}
+		, resetPosition:function() {
+			var a, e, i;
+			this.settings.target===h?(this.settings.captionAndToolbarFlipPosition?(e=c.DOM.windowScrollTop(), i=c.DOM.windowScrollTop()+c.DOM.windowHeight()-c.DOM.height(this.captionEl)): (e=c.DOM.windowScrollTop()+c.DOM.windowHeight()-c.DOM.height(this.toolbarEl), i=c.DOM.windowScrollTop()), a=c.DOM.windowWidth()): (this.settings.captionAndToolbarFlipPosition?(e="0", i=c.DOM.height(this.settings.target)-c.DOM.height(this.captionEl)): (e=c.DOM.height(this.settings.target)-c.DOM.height(this.toolbarEl), i=0), a=c.DOM.width(this.settings.target));
+			c.DOM.setStyle(this.toolbarEl, {
+				top: e+"px", width: a
+			}
+			);
+			c.DOM.setStyle(this.captionEl, {
+				top: i+"px", width: a
+			}
+			)
+		}
+		, toggleVisibility:function(b) {
+			this.isVisible?this.fadeOut(): this.show(b)
+		}
+		, show:function(a) {
+			c.Animation.stop(this.toolbarEl);
+			c.Animation.stop(this.captionEl);
+			this.resetPosition();
+			this.setToolbarStatus(a);
+			c.Events.fire(this, {
+				type: f.Toolbar.EventTypes.onBeforeShow, target: this
+			}
+			);
+			this.showToolbar();
+			this.setCaption(a);
+			this.showCaption();
+			this.isVisible=!0;
+			this.setTimeout();
+			c.Events.fire(this, {
+				type: f.Toolbar.EventTypes.onShow, target: this
+			}
+			)
+		}
+		, setTimeout:function() {
+			if(this.settings.captionAndToolbarAutoHideDelay>0) {
+				this.clearTimeout(), this.timeout=h.setTimeout(this.fadeOut.bind(this), this.settings.captionAndToolbarAutoHideDelay)
+			}
+		}
+		, clearTimeout:function() {
+			if(!c.isNothing(this.timeout)) {
+				h.clearTimeout(this.timeout), this.timeout=null
+			}
+		}
+		, fadeOut:function() {
+			this.clearTimeout();
+			c.Events.fire(this, {
+				type: f.Toolbar.EventTypes.onBeforeHide, target: this
+			}
+			);
+			c.Animation.fadeOut(this.toolbarEl, this.settings.fadeOutSpeed);
+			c.Animation.fadeOut(this.captionEl, this.settings.fadeOutSpeed, this.fadeOutHandler);
+			this.isVisible=!1
+		}
+		, addEventHandlers:function() {
+			c.Browser.isTouchSupported&&(c.Browser.blackberry||c.Events.add(this.toolbarEl, "touchstart", this.touchStartHandler), c.Events.add(this.toolbarEl, "touchmove", this.touchMoveHandler), c.Events.add(this.captionEl, "touchmove", this.touchMoveHandler));
+			c.Events.add(this.toolbarEl, "click", this.clickHandler)
+		}
+		, removeEventHandlers:function() {
+			c.Browser.isTouchSupported&&(c.Browser.blackberry||c.Events.remove(this.toolbarEl, "touchstart", this.touchStartHandler), c.Events.remove(this.toolbarEl, "touchmove", this.touchMoveHandler), c.Events.remove(this.captionEl, "touchmove", this.touchMoveHandler));
+			c.Events.remove(this.toolbarEl, "click", this.clickHandler)
+		}
+		, handleTap:function(a) {
+			this.clearTimeout();
+			var b;
+			if(a.target===this.nextEl||c.DOM.isChildOf(a.target, this.nextEl)) {
+				b=f.Toolbar.ToolbarAction.next
+			}
+			else {
+				if(a.target===this.previousEl||c.DOM.isChildOf(a.target, this.previousEl)) {
+					b=f.Toolbar.ToolbarAction.previous
+				}
+				else {
+					if(a.target===this.closeEl||c.DOM.isChildOf(a.target, this.closeEl)) {
+						b=f.Toolbar.ToolbarAction.close
+					}
+					else {
+						if(a.target===this.playEl||c.DOM.isChildOf(a.target, this.playEl)) {
+							b=f.Toolbar.ToolbarAction.play
+						}
+					}
+				}
+			}
+			this.setTimeout();
+			if(c.isNothing(b)) {
+				b=f.Toolbar.ToolbarAction.none
+			}
+			c.Events.fire(this, {
+				type: f.Toolbar.EventTypes.onTap, target: this, action: b, tapTarget: a.target
+			}
+			)
+		}
+		, setCaption:function(a) {
+			c.DOM.removeChildren(this.captionContentEl);
+			this.currentCaption=c.coalesce(this.cache.images[a].caption, "\u00a0");
+			if(c.isObject(this.currentCaption)) {
+				c.DOM.appendChild(this.currentCaption, this.captionContentEl)
+			}
+			else {
+				if(this.currentCaption==="") {
+					this.currentCaption="\u00a0"
+				}
+				c.DOM.appendText(this.currentCaption, this.captionContentEl)
+			}
+			this.currentCaption=this.currentCaption==="\u00a0"?"":this.currentCaption;
+			this.resetPosition()
+		}
+		, showToolbar:function() {
+			c.DOM.setStyle(this.toolbarEl, {
+				opacity: this.settings.captionAndToolbarOpacity
+			}
+			);
+			c.DOM.show(this.toolbarEl)
+		}
+		, showCaption:function() {
+			(this.currentCaption===""||this.captionContentEl.childNodes.length<1)&&!this.settings.captionAndToolbarShowEmptyCaptions?c.DOM.hide(this.captionEl):(c.DOM.setStyle(this.captionEl, {
+				opacity: this.settings.captionAndToolbarOpacity
+			}
+			), c.DOM.show(this.captionEl))
+		}
+		, setToolbarStatus:function(a) {
+			this.settings.loop||(c.DOM.removeClass(this.previousEl, f.Toolbar.CssClasses.previousDisabled), c.DOM.removeClass(this.nextEl, f.Toolbar.CssClasses.nextDisabled), a>0&&a<this.cache.images.length-1||(a===0&&(c.isNothing(this.previousEl)||c.DOM.addClass(this.previousEl, f.Toolbar.CssClasses.previousDisabled)), a===this.cache.images.length-1&&(c.isNothing(this.nextEl)||c.DOM.addClass(this.nextEl, f.Toolbar.CssClasses.nextDisabled))))
+		}
+		, onFadeOut:function() {
+			c.DOM.hide(this.toolbarEl);
+			c.DOM.hide(this.captionEl);
+			c.Events.fire(this, {
+				type: f.Toolbar.EventTypes.onHide, target: this
+			}
+			)
+		}
+		, onTouchStart:function(a) {
+			a.preventDefault();
+			c.Events.remove(this.toolbarEl, "click", this.clickHandler);
+			this.handleTap(a)
+		}
+		, onTouchMove:function(b) {
+			b.preventDefault()
+		}
+		, onClick:function(b) {
+			b.preventDefault();
+			this.handleTap(b)
+		}
+	}
+	)
+}
+
+)(window, window.klass, window.Code.Util);
+(function(f, c, b) {
+	b.registerNamespace("Code.PhotoSwipe.UILayer");
+	f.Code.PhotoSwipe.UILayer.CssClasses= {
+		uiLayer: "ps-uilayer"
+	}
+}
+
+)(window, window.klass, window.Code.Util);
+(function(h, g, c) {
+	c.registerNamespace("Code.PhotoSwipe.UILayer");
+	var f=h.Code.PhotoSwipe;
+	f.UILayer.UILayerClass=c.TouchElement.TouchElementClass.extend( {
+		el:null, settings:null, dispose:function() {
+			var a;
+			this.removeEventHandlers();
+			c.DOM.removeChild(this.el, this.el.parentNode);
+			for(a in this) {
+				c.objectHasProperty(this, a)&&(this[a]=null)
+			}
+		}
+		, initialize:function(a) {
+			this.settings=a;
+			this.el=c.DOM.createElement("div", {
+				"class": f.UILayer.CssClasses.uiLayer
+			}
+			, "");
+			c.DOM.setStyle(this.el, {
+				display: "block", position: "absolute", left: 0, top: 0, overflow: "hidden", zIndex: this.settings.zIndex, opacity: 0
+			}
+			);
+			c.DOM.hide(this.el);
+			this.settings.target===h?c.DOM.appendToBody(this.el):c.DOM.appendChild(this.el, this.settings.target);
+			this.supr(this.el, {
+				swipe: !0, move: !0, gesture: c.Browser.iOS, doubleTap: !0, preventDefaultTouchEvents: this.settings.preventDefaultTouchEvents
+			}
+			)
+		}
+		, resetPosition:function() {
+			this.settings.target===h?c.DOM.setStyle(this.el, {
+				top: c.DOM.windowScrollTop()+"px", width: c.DOM.windowWidth(), height: c.DOM.windowHeight()
+			}
+			):c.DOM.setStyle(this.el, {
+				top: "0px", width: c.DOM.width(this.settings.target), height: c.DOM.height(this.settings.target)
+			}
+			)
+		}
+		, show:function() {
+			this.resetPosition();
+			c.DOM.show(this.el);
+			this.addEventHandlers()
+		}
+		, addEventHandlers:function() {
+			this.supr()
+		}
+		, removeEventHandlers:function() {
+			this.supr()
+		}
+	}
+	)
+}
+
+)(window, window.klass, window.Code.Util);
+(function(f, c, b) {
+	b.registerNamespace("Code.PhotoSwipe.ZoomPanRotate");
+	f=f.Code.PhotoSwipe;
+	f.ZoomPanRotate.CssClasses= {
+		zoomPanRotate: "ps-zoom-pan-rotate"
+	}
+	;
+	f.ZoomPanRotate.EventTypes= {
+		onTransform: "PhotoSwipeZoomPanRotateOnTransform"
+	}
+}
+
+)(window, window.klass, window.Code.Util);
+(function(h, g, c) {
+	c.registerNamespace("Code.PhotoSwipe.ZoomPanRotate");
+	var f=h.Code.PhotoSwipe;
+	f.ZoomPanRotate.ZoomPanRotateClass=g( {
+		el:null, settings:null, containerEl:null, imageEl:null, transformSettings:null, panStartingPoint:null, transformEl:null, dispose:function() {
+			var a;
+			c.DOM.removeChild(this.el, this.el.parentNode);
+			for(a in this) {
+				c.objectHasProperty(this, a)&&(this[a]=null)
+			}
+		}
+		, initialize:function(a, b, e) {
+			var l, m, k;
+			this.settings=a;
+			this.settings.target===h?(a=document.body, l=c.DOM.windowWidth(), m=c.DOM.windowHeight(), k=c.DOM.windowScrollTop()+"px"): (a=this.settings.target, l=c.DOM.width(a), m=c.DOM.height(a), k="0px");
+			this.imageEl=b.imageEl.cloneNode(!1);
+			c.DOM.setStyle(this.imageEl, {
+				zIndex: 1
+			}
+			);
+			this.transformSettings= {
+				startingScale: 1, scale: 1, startingRotation: 0, rotation: 0, startingTranslateX: 0, startingTranslateY: 0, translateX: 0, translateY: 0
+			}
+			;
+			this.el=c.DOM.createElement("div", {
+				"class": f.ZoomPanRotate.CssClasses.zoomPanRotate
+			}
+			, "");
+			c.DOM.setStyle(this.el, {
+				left: 0, top: k, position: "absolute", width: l, height: m, zIndex: this.settings.zIndex, display: "block"
+			}
+			);
+			c.DOM.insertBefore(this.el, e.el, a);
+			c.Browser.iOS?(this.containerEl=c.DOM.createElement("div", "", ""), c.DOM.setStyle(this.containerEl, {
+				left: 0, top: 0, width: l, height: m, position: "absolute", zIndex: 1
+			}
+			), c.DOM.appendChild(this.imageEl, this.containerEl), c.DOM.appendChild(this.containerEl, this.el), c.Animation.resetTranslate(this.containerEl), c.Animation.resetTranslate(this.imageEl), this.transformEl=this.containerEl):(c.DOM.appendChild(this.imageEl, this.el), this.transformEl=this.imageEl)
+		}
+		, setStartingTranslateFromCurrentTransform:function() {
+			var a=c.coalesce(this.transformEl.style.webkitTransform, this.transformEl.style.MozTransform, this.transformEl.style.transform);
+			if(!c.isNothing(a)&&(a=a.match(/translate\((.*?)\)/), !c.isNothing(a))) {
+				a=a[1].split(", "), this.transformSettings.startingTranslateX=h.parseInt(a[0], 10), this.transformSettings.startingTranslateY=h.parseInt(a[1], 10)
+			}
+		}
+		, getScale:function(b) {
+			b*=this.transformSettings.startingScale;
+			if(this.settings.minUserZoom!==0&&b<this.settings.minUserZoom) {
+				b=this.settings.minUserZoom
+			}
+			else {
+				if(this.settings.maxUserZoom!==0&&b>this.settings.maxUserZoom) {
+					b=this.settings.maxUserZoom
+				}
+			}
+			return b
+		}
+		, setStartingScaleAndRotation:function(d, e) {
+			this.transformSettings.startingScale=this.getScale(d);
+			this.transformSettings.startingRotation=(this.transformSettings.startingRotation+e)%360
+		}
+		, zoomRotate:function(d, e) {
+			this.transformSettings.scale=this.getScale(d);
+			this.transformSettings.rotation=this.transformSettings.startingRotation+e;
+			this.applyTransform()
+		}
+		, panStart:function(b) {
+			this.setStartingTranslateFromCurrentTransform();
+			this.panStartingPoint= {
+				x: b.x, y: b.y
+			}
+		}
+		, pan:function(d) {
+			var e=(d.y-this.panStartingPoint.y)/this.transformSettings.scale;
+			this.transformSettings.translateX=this.transformSettings.startingTranslateX+(d.x-this.panStartingPoint.x)/this.transformSettings.scale;
+			this.transformSettings.translateY=this.transformSettings.startingTranslateY+e;
+			this.applyTransform()
+		}
+		, zoomAndPanToPoint:function(a, e) {
+			if(this.settings.target===h) {
+				this.panStart( {
+					x: c.DOM.windowWidth()/2, y: c.DOM.windowHeight()/2
+				}
+				);
+				var i=(e.y-this.panStartingPoint.y)/this.transformSettings.scale;
+				this.transformSettings.translateX=(this.transformSettings.startingTranslateX+(e.x-this.panStartingPoint.x)/this.transformSettings.scale)*-1;
+				this.transformSettings.translateY=(this.transformSettings.startingTranslateY+i)*-1
+			}
+			this.setStartingScaleAndRotation(a, 0);
+			this.transformSettings.scale=this.transformSettings.startingScale;
+			this.transformSettings.rotation=0;
+			this.applyTransform()
+		}
+		, applyTransform:function() {
+			var a=this.transformSettings.rotation%360, b=h.parseInt(this.transformSettings.translateX, 10), e=h.parseInt(this.transformSettings.translateY, 10), j="scale("+this.transformSettings.scale+") rotate("+a+"deg) translate("+b+"px, "+e+"px)";
+			c.DOM.setStyle(this.transformEl, {
+				webkitTransform: j, MozTransform: j, msTransform: j, transform: j
+			}
+			);
+			c.Events.fire(this, {
+				target: this, type: f.ZoomPanRotate.EventTypes.onTransform, scale: this.transformSettings.scale, rotation: this.transformSettings.rotation, rotationDegs: a, translateX: b, translateY: e
+			}
+			)
+		}
+	}
+	)
+}
+
+)(window, window.klass, window.Code.Util);
+(function(f, c) {
+	c.registerNamespace("Code.PhotoSwipe");
+	var b=f.Code.PhotoSwipe;
+	b.CssClasses= {
+		buildingBody: "ps-building", activeBody: "ps-active"
+	}
+	;
+	b.EventTypes= {
+		onBeforeShow: "PhotoSwipeOnBeforeShow", onShow: "PhotoSwipeOnShow", onBeforeHide: "PhotoSwipeOnBeforeHide", onHide: "PhotoSwipeOnHide", onDisplayImage: "PhotoSwipeOnDisplayImage", onResetPosition: "PhotoSwipeOnResetPosition", onSlideshowStart: "PhotoSwipeOnSlideshowStart", onSlideshowStop: "PhotoSwipeOnSlideshowStop", onTouch: "PhotoSwipeOnTouch", onBeforeCaptionAndToolbarShow: "PhotoSwipeOnBeforeCaptionAndToolbarShow", onCaptionAndToolbarShow: "PhotoSwipeOnCaptionAndToolbarShow", onBeforeCaptionAndToolbarHide: "PhotoSwipeOnBeforeCaptionAndToolbarHide", onCaptionAndToolbarHide: "PhotoSwipeOnCaptionAndToolbarHide", onToolbarTap: "PhotoSwipeOnToolbarTap", onBeforeZoomPanRotateShow: "PhotoSwipeOnBeforeZoomPanRotateShow", onZoomPanRotateShow: "PhotoSwipeOnZoomPanRotateShow", onBeforeZoomPanRotateHide: "PhotoSwipeOnBeforeZoomPanRotateHide", onZoomPanRotateHide: "PhotoSwipeOnZoomPanRotateHide", onZoomPanRotateTransform: "PhotoSwipeOnZoomPanRotateTransform"
+	}
+	;
+	b.instances=[];
+	b.activeInstances=[];
+	b.setActivateInstance=function(a) {
+		if(c.arrayIndexOf(a.settings.target, b.activeInstances, "target")>-1) {
+			throw"Code.PhotoSwipe.activateInstance: Unable to active instance as another instance is already active for this target"
+		}
+		b.activeInstances.push( {
+			target: a.settings.target, instance: a
+		}
+		)
+	}
+	;
+	b.unsetActivateInstance=function(a) {
+		a=c.arrayIndexOf(a, b.activeInstances, "instance");
+		b.activeInstances.splice(a, 1)
+	}
+	;
+	b.attach=function(a, d, g) {
+		var h, j;
+		h=b.createInstance(a, d, g);
+		d=0;
+		for(g=a.length;
+		d<g;
+		d++) {
+			if(j=a[d], !c.isNothing(j.nodeType)&&j.nodeType===1) {
+				j.__photoSwipeClickHandler=b.onTriggerElementClick.bind(h), c.Events.remove(j, "click", j.__photoSwipeClickHandler), c.Events.add(j, "click", j.__photoSwipeClickHandler)
+			}
+		}
+		return h
+	}
+	;
+	if(f.jQuery) {
+		f.jQuery.fn.photoSwipe=function(a, d) {
+			return b.attach(this, a, d)
+		}
+	}
+	b.detatch=function(a) {
+		var d, g, h;
+		d=0;
+		for(g=a.originalImages.length;
+		d<g;
+		d++) {
+			h=a.originalImages[d], !c.isNothing(h.nodeType)&&h.nodeType===1&&(c.Events.remove(h, "click", h.__photoSwipeClickHandler), delete h.__photoSwipeClickHandler)
+		}
+		b.disposeInstance(a)
+	}
+	;
+	b.createInstance=function(a, d, g) {
+		var h;
+		if(c.isNothing(a)) {
+			throw"Code.PhotoSwipe.attach: No images passed."
+		}
+		if(!c.isLikeArray(a)) {
+			throw"Code.PhotoSwipe.createInstance: Images must be an array of elements or image urls."
+		}
+		if(a.length<1) {
+			throw"Code.PhotoSwipe.createInstance: No images to passed."
+		}
+		d=c.coalesce(d, {}
+		);
+		h=b.getInstance(g);
+		if(c.isNothing(h)) {
+			h=new b.PhotoSwipeClass(a, d, g), b.instances.push(h)
+		}
+		else {
+			throw'Code.PhotoSwipe.createInstance: Instance with id "'+g+' already exists."'
+		}
+		return h
+	}
+	;
+	b.disposeInstance=function(a) {
+		var d=b.getInstanceIndex(a);
+		if(d<0) {
+			throw"Code.PhotoSwipe.disposeInstance: Unable to find instance to dispose."
+		}
+		a.dispose();
+		b.instances.splice(d, 1)
+	}
+	;
+	b.onTriggerElementClick=function(d) {
+		d.preventDefault();
+		this.show(d.currentTarget)
+	}
+	;
+	b.getInstance=function(a) {
+		var g, h, i;
+		g=0;
+		for(h=b.instances.length;
+		g<h;
+		g++) {
+			if(i=b.instances[g], i.id===a) {
+				return i
+			}
+		}
+		return null
+	}
+	;
+	b.getInstanceIndex=function(a) {
+		var g, h, i=-1;
+		g=0;
+		for(h=b.instances.length;
+		g<h;
+		g++) {
+			if(b.instances[g]===a) {
+				i=g;
+				break
+			}
+		}
+		return i
+	}
+}
+
+)(window, window.Code.Util);
+(function(o, n, k, l, m, q, p, s, t) {
+	k.registerNamespace("Code.PhotoSwipe");
+	var r=o.Code.PhotoSwipe;
+	r.PhotoSwipeClass=n( {
+		id:null, settings:null, isBackEventSupported:null, backButtonClicked:null, currentIndex:null, originalImages:null, mouseWheelStartTime:null, windowDimensions:null, cache:null, documentOverlay:null, carousel:null, uiLayer:null, toolbar:null, zoomPanRotate:null, windowOrientationChangeHandler:null, windowScrollHandler:null, windowHashChangeHandler:null, keyDownHandler:null, windowOrientationEventName:null, uiLayerTouchHandler:null, carouselSlideByEndHandler:null, carouselSlideshowStartHandler:null, carouselSlideshowStopHandler:null, toolbarTapHandler:null, toolbarBeforeShowHandler:null, toolbarShowHandler:null, toolbarBeforeHideHandler:null, toolbarHideHandler:null, mouseWheelHandler:null, zoomPanRotateTransformHandler:null, _isResettingPosition:null, _uiWebViewResetPositionTimeout:null, dispose:function() {
+			var a;
+			k.Events.remove(this, r.EventTypes.onBeforeShow);
+			k.Events.remove(this, r.EventTypes.onShow);
+			k.Events.remove(this, r.EventTypes.onBeforeHide);
+			k.Events.remove(this, r.EventTypes.onHide);
+			k.Events.remove(this, r.EventTypes.onDisplayImage);
+			k.Events.remove(this, r.EventTypes.onResetPosition);
+			k.Events.remove(this, r.EventTypes.onSlideshowStart);
+			k.Events.remove(this, r.EventTypes.onSlideshowStop);
+			k.Events.remove(this, r.EventTypes.onTouch);
+			k.Events.remove(this, r.EventTypes.onBeforeCaptionAndToolbarShow);
+			k.Events.remove(this, r.EventTypes.onCaptionAndToolbarShow);
+			k.Events.remove(this, r.EventTypes.onBeforeCaptionAndToolbarHide);
+			k.Events.remove(this, r.EventTypes.onCaptionAndToolbarHide);
+			k.Events.remove(this, r.EventTypes.onZoomPanRotateTransform);
+			this.removeEventHandlers();
+			k.isNothing(this.documentOverlay)||this.documentOverlay.dispose();
+			k.isNothing(this.carousel)||this.carousel.dispose();
+			k.isNothing(this.uiLayer)||this.uiLayer.dispose();
+			k.isNothing(this.toolbar)||this.toolbar.dispose();
+			this.destroyZoomPanRotate();
+			k.isNothing(this.cache)||this.cache.dispose();
+			for(a in this) {
+				k.objectHasProperty(this, a)&&(this[a]=null)
+			}
+		}
+		, initialize:function(a, b, e) {
+			this.id=k.isNothing(e)?"PhotoSwipe"+(new Date).getTime().toString(): e;
+			this.originalImages=a;
+			if(k.Browser.android&&!k.Browser.firefox&&o.navigator.userAgent.match(/Android (\d+.\d+)/).toString().replace(/^.*\, /, "")>=2.1) {
+				this.isBackEventSupported=!0
+			}
+			if(!this.isBackEventSupported) {
+				this.isBackEventSupported=k.objectHasProperty(o, "onhashchange")
+			}
+			this.settings= {
+				fadeInSpeed: 250, fadeOutSpeed: 250, preventHide: !1, preventSlideshow: !1, zIndex: 1000, backButtonHideEnabled: !0, enableKeyboard: !0, enableMouseWheel: !0, mouseWheelSpeed: 350, autoStartSlideshow: !1, jQueryMobile: !k.isNothing(o.jQuery)&&!k.isNothing(o.jQuery.mobile), jQueryMobileDialogHash: "&ui-state=dialog", enableUIWebViewRepositionTimeout: !1, uiWebViewResetPositionDelay: 500, target: o, preventDefaultTouchEvents: !0, loop: !0, slideSpeed: 250, nextPreviousSlideSpeed: 0, enableDrag: !0, swipeThreshold: 50, swipeTimeThreshold: 250, slideTimingFunction: "ease-out", slideshowDelay: 3000, doubleTapSpeed: 250, margin: 20, imageScaleMethod: "fit", captionAndToolbarHide: !1, captionAndToolbarFlipPosition: !1, captionAndToolbarAutoHideDelay: 5000, captionAndToolbarOpacity: 0.8, captionAndToolbarShowEmptyCaptions: !0, getToolbar: r.Toolbar.getToolbar, allowUserZoom: !0, allowRotationOnUserZoom: !1, maxUserZoom: 5, minUserZoom: 0.5, doubleTapZoomLevel: 2.5, getImageSource: r.Cache.Functions.getImageSource, getImageCaption: r.Cache.Functions.getImageCaption, getImageMetaData: r.Cache.Functions.getImageMetaData, cacheMode: r.Cache.Mode.normal
+			}
+			;
+			k.extend(this.settings, b);
+			this.settings.target!==o&&(b=k.DOM.getStyle(this.settings.target, "position"), (b!=="relative"||b!=="absolute")&&k.DOM.setStyle(this.settings.target, "position", "relative"));
+			if(this.settings.target!==o) {
+				this.isBackEventSupported=!1, this.settings.backButtonHideEnabled=!1
+			}
+			else {
+				if(this.settings.preventHide) {
+					this.settings.backButtonHideEnabled=!1
+				}
+			}
+			this.cache=new l.CacheClass(a, this.settings)
+		}
+		, show:function(a) {
+			var e, f;
+			this.backButtonClicked=this._isResettingPosition=!1;
+			if(k.isNumber(a)) {
+				this.currentIndex=a
+			}
+			else {
+				this.currentIndex=-1;
+				e=0;
+				for(f=this.originalImages.length;
+				e<f;
+				e++) {
+					if(this.originalImages[e]===a) {
+						this.currentIndex=e;
+						break
+					}
+				}
+			}
+			if(this.currentIndex<0||this.currentIndex>this.originalImages.length-1) {
+				throw"Code.PhotoSwipe.PhotoSwipeClass.show: Starting index out of range"
+			}
+			this.isAlreadyGettingPage=this.getWindowDimensions();
+			r.setActivateInstance(this);
+			this.windowDimensions=this.getWindowDimensions();
+			this.settings.target===o?k.DOM.addClass(o.document.body, r.CssClasses.buildingBody):k.DOM.addClass(this.settings.target, r.CssClasses.buildingBody);
+			this.createComponents();
+			k.Events.fire(this, {
+				type: r.EventTypes.onBeforeShow, target: this
+			}
+			);
+			this.documentOverlay.fadeIn(this.settings.fadeInSpeed, this.onDocumentOverlayFadeIn.bind(this))
+		}
+		, getWindowDimensions:function() {
+			return {
+				width: k.DOM.windowWidth(), height: k.DOM.windowHeight()
+			}
+		}
+		, createComponents:function() {
+			this.documentOverlay=new m.DocumentOverlayClass(this.settings);
+			this.carousel=new q.CarouselClass(this.cache, this.settings);
+			this.uiLayer=new s.UILayerClass(this.settings);
+			if(!this.settings.captionAndToolbarHide) {
+				this.toolbar=new p.ToolbarClass(this.cache, this.settings)
+			}
+		}
+		, resetPosition:function() {
+			if(!this._isResettingPosition) {
+				var a=this.getWindowDimensions();
+				if(k.isNothing(this.windowDimensions)||!(a.width===this.windowDimensions.width&&a.height===this.windowDimensions.height)) {
+					this._isResettingPosition=!0, this.windowDimensions=a, this.destroyZoomPanRotate(), this.documentOverlay.resetPosition(), this.carousel.resetPosition(), k.isNothing(this.toolbar)||this.toolbar.resetPosition(), this.uiLayer.resetPosition(), this._isResettingPosition=!1, k.Events.fire(this, {
+						type: r.EventTypes.onResetPosition, target: this
+					}
+					)
+				}
+			}
+		}
+		, addEventHandler:function(a, d) {
+			k.Events.add(this, a, d)
+		}
+		, addEventHandlers:function() {
+			if(k.isNothing(this.windowOrientationChangeHandler)) {
+				this.windowOrientationChangeHandler=this.onWindowOrientationChange.bind(this), this.windowScrollHandler=this.onWindowScroll.bind(this), this.keyDownHandler=this.onKeyDown.bind(this), this.windowHashChangeHandler=this.onWindowHashChange.bind(this), this.uiLayerTouchHandler=this.onUILayerTouch.bind(this), this.carouselSlideByEndHandler=this.onCarouselSlideByEnd.bind(this), this.carouselSlideshowStartHandler=this.onCarouselSlideshowStart.bind(this), this.carouselSlideshowStopHandler=this.onCarouselSlideshowStop.bind(this), this.toolbarTapHandler=this.onToolbarTap.bind(this), this.toolbarBeforeShowHandler=this.onToolbarBeforeShow.bind(this), this.toolbarShowHandler=this.onToolbarShow.bind(this), this.toolbarBeforeHideHandler=this.onToolbarBeforeHide.bind(this), this.toolbarHideHandler=this.onToolbarHide.bind(this), this.mouseWheelHandler=this.onMouseWheel.bind(this), this.zoomPanRotateTransformHandler=this.onZoomPanRotateTransform.bind(this)
+			}
+			k.Browser.android?this.orientationEventName="resize":k.Browser.iOS&&!k.Browser.safari?k.Events.add(o.document.body, "orientationchange", this.windowOrientationChangeHandler):this.orientationEventName=!k.isNothing(o.onorientationchange)?"orientationchange":"resize";
+			k.isNothing(this.orientationEventName)||k.Events.add(o, this.orientationEventName, this.windowOrientationChangeHandler);
+			this.settings.target===o&&k.Events.add(o, "scroll", this.windowScrollHandler);
+			this.settings.enableKeyboard&&k.Events.add(o.document, "keydown", this.keyDownHandler);
+			if(this.isBackEventSupported&&this.settings.backButtonHideEnabled) {
+				this.windowHashChangeHandler=this.onWindowHashChange.bind(this), this.settings.jQueryMobile?o.location.hash=this.settings.jQueryMobileDialogHash: (this.currentHistoryHashValue="PhotoSwipe"+(new Date).getTime().toString(), o.location.hash=this.currentHistoryHashValue), k.Events.add(o, "hashchange", this.windowHashChangeHandler)
+			}
+			this.settings.enableMouseWheel&&k.Events.add(o, "mousewheel", this.mouseWheelHandler);
+			k.Events.add(this.uiLayer, k.TouchElement.EventTypes.onTouch, this.uiLayerTouchHandler);
+			k.Events.add(this.carousel, q.EventTypes.onSlideByEnd, this.carouselSlideByEndHandler);
+			k.Events.add(this.carousel, q.EventTypes.onSlideshowStart, this.carouselSlideshowStartHandler);
+			k.Events.add(this.carousel, q.EventTypes.onSlideshowStop, this.carouselSlideshowStopHandler);
+			k.isNothing(this.toolbar)||(k.Events.add(this.toolbar, p.EventTypes.onTap, this.toolbarTapHandler), k.Events.add(this.toolbar, p.EventTypes.onBeforeShow, this.toolbarBeforeShowHandler), k.Events.add(this.toolbar, p.EventTypes.onShow, this.toolbarShowHandler), k.Events.add(this.toolbar, p.EventTypes.onBeforeHide, this.toolbarBeforeHideHandler), k.Events.add(this.toolbar, p.EventTypes.onHide, this.toolbarHideHandler))
+		}
+		, removeEventHandlers:function() {
+			k.Browser.iOS&&!k.Browser.safari&&k.Events.remove(o.document.body, "orientationchange", this.windowOrientationChangeHandler);
+			k.isNothing(this.orientationEventName)||k.Events.remove(o, this.orientationEventName, this.windowOrientationChangeHandler);
+			k.Events.remove(o, "scroll", this.windowScrollHandler);
+			this.settings.enableKeyboard&&k.Events.remove(o.document, "keydown", this.keyDownHandler);
+			this.isBackEventSupported&&this.settings.backButtonHideEnabled&&k.Events.remove(o, "hashchange", this.windowHashChangeHandler);
+			this.settings.enableMouseWheel&&k.Events.remove(o, "mousewheel", this.mouseWheelHandler);
+			k.isNothing(this.uiLayer)||k.Events.remove(this.uiLayer, k.TouchElement.EventTypes.onTouch, this.uiLayerTouchHandler);
+			k.isNothing(this.toolbar)||(k.Events.remove(this.carousel, q.EventTypes.onSlideByEnd, this.carouselSlideByEndHandler), k.Events.remove(this.carousel, q.EventTypes.onSlideshowStart, this.carouselSlideshowStartHandler), k.Events.remove(this.carousel, q.EventTypes.onSlideshowStop, this.carouselSlideshowStopHandler));
+			k.isNothing(this.toolbar)||(k.Events.remove(this.toolbar, p.EventTypes.onTap, this.toolbarTapHandler), k.Events.remove(this.toolbar, p.EventTypes.onBeforeShow, this.toolbarBeforeShowHandler), k.Events.remove(this.toolbar, p.EventTypes.onShow, this.toolbarShowHandler), k.Events.remove(this.toolbar, p.EventTypes.onBeforeHide, this.toolbarBeforeHideHandler), k.Events.remove(this.toolbar, p.EventTypes.onHide, this.toolbarHideHandler))
+		}
+		, hide:function() {
+			if(!this.settings.preventHide) {
+				if(k.isNothing(this.documentOverlay)) {
+					throw"Code.PhotoSwipe.PhotoSwipeClass.hide: PhotoSwipe instance is already hidden"
+				}
+				if(k.isNothing(this.hiding)) {
+					this.clearUIWebViewResetPositionTimeout();
+					this.destroyZoomPanRotate();
+					this.removeEventHandlers();
+					k.Events.fire(this, {
+						type: r.EventTypes.onBeforeHide, target: this
+					}
+					);
+					this.uiLayer.dispose();
+					this.uiLayer=null;
+					if(!k.isNothing(this.toolbar)) {
+						this.toolbar.dispose(), this.toolbar=null
+					}
+					this.carousel.dispose();
+					this.carousel=null;
+					k.DOM.removeClass(o.document.body, r.CssClasses.activeBody);
+					this.documentOverlay.dispose();
+					this.documentOverlay=null;
+					this._isResettingPosition=!1;
+					r.unsetActivateInstance(this);
+					k.Events.fire(this, {
+						type: r.EventTypes.onHide, target: this
+					}
+					);
+					this.goBackInHistory()
+				}
+			}
+		}
+		, goBackInHistory:function() {
+			this.isBackEventSupported&&this.settings.backButtonHideEnabled&&(this.backButtonClicked||o.history.back())
+		}
+		, play:function() {
+			!this.isZoomActive()&&!this.settings.preventSlideshow&&!k.isNothing(this.carousel)&&(!k.isNothing(this.toolbar)&&this.toolbar.isVisible&&this.toolbar.fadeOut(), this.carousel.startSlideshow())
+		}
+		, stop:function() {
+			this.isZoomActive()||k.isNothing(this.carousel)||this.carousel.stopSlideshow()
+		}
+		, previous:function() {
+			this.isZoomActive()||k.isNothing(this.carousel)||this.carousel.previous()
+		}
+		, next:function() {
+			this.isZoomActive()||k.isNothing(this.carousel)||this.carousel.next()
+		}
+		, toggleToolbar:function() {
+			this.isZoomActive()||k.isNothing(this.toolbar)||this.toolbar.toggleVisibility(this.currentIndex)
+		}
+		, fadeOutToolbarIfVisible:function() {
+			!k.isNothing(this.toolbar)&&this.toolbar.isVisible&&this.settings.captionAndToolbarAutoHideDelay>0&&this.toolbar.fadeOut()
+		}
+		, createZoomPanRotate:function() {
+			this.stop();
+			if(this.canUserZoom()&&!this.isZoomActive()) {
+				k.Events.fire(this, r.EventTypes.onBeforeZoomPanRotateShow), this.zoomPanRotate=new t.ZoomPanRotateClass(this.settings, this.cache.images[this.currentIndex], this.uiLayer), this.uiLayer.captureSettings.preventDefaultTouchEvents=!0, k.Events.add(this.zoomPanRotate, r.ZoomPanRotate.EventTypes.onTransform, this.zoomPanRotateTransformHandler), k.Events.fire(this, r.EventTypes.onZoomPanRotateShow), !k.isNothing(this.toolbar)&&this.toolbar.isVisible&&this.toolbar.fadeOut()
+			}
+		}
+		, destroyZoomPanRotate:function() {
+			if(!k.isNothing(this.zoomPanRotate)) {
+				k.Events.fire(this, r.EventTypes.onBeforeZoomPanRotateHide), k.Events.remove(this.zoomPanRotate, r.ZoomPanRotate.EventTypes.onTransform, this.zoomPanRotateTransformHandler), this.zoomPanRotate.dispose(), this.zoomPanRotate=null, this.uiLayer.captureSettings.preventDefaultTouchEvents=this.settings.preventDefaultTouchEvents, k.Events.fire(this, r.EventTypes.onZoomPanRotateHide)
+			}
+		}
+		, canUserZoom:function() {
+			var a;
+			if(k.Browser.msie) {
+				if(a=document.createElement("div"), k.isNothing(a.style.msTransform)) {
+					return !1
+				}
+			}
+			else {
+				if(!k.Browser.isCSSTransformSupported) {
+					return !1
+				}
+			}
+			if(!this.settings.allowUserZoom) {
+				return !1
+			}
+			if(this.carousel.isSliding) {
+				return !1
+			}
+			a=this.cache.images[this.currentIndex];
+			if(k.isNothing(a)) {
+				return !1
+			}
+			if(a.isLoading) {
+				return !1
+			}
+			return !0
+		}
+		, isZoomActive:function() {
+			return !k.isNothing(this.zoomPanRotate)
+		}
+		, getCurrentImage:function() {
+			return this.cache.images[this.currentIndex]
+		}
+		, onDocumentOverlayFadeIn:function() {
+			o.setTimeout(function() {
+				var a=this.settings.target===o?o.document.body: this.settings.target;
+				k.DOM.removeClass(a, r.CssClasses.buildingBody);
+				k.DOM.addClass(a, r.CssClasses.activeBody);
+				this.addEventHandlers();
+				this.carousel.show(this.currentIndex);
+				this.uiLayer.show();
+				this.settings.autoStartSlideshow?this.play(): k.isNothing(this.toolbar)||this.toolbar.show(this.currentIndex);
+				k.Events.fire(this, {
+					type: r.EventTypes.onShow, target: this
+				}
+				);
+				this.setUIWebViewResetPositionTimeout()
+			}
+			.bind(this), 250)
+		}
+		, setUIWebViewResetPositionTimeout:function() {
+			if(this.settings.enableUIWebViewRepositionTimeout&&k.Browser.iOS&&!k.Browser.safari) {
+				k.isNothing(this._uiWebViewResetPositionTimeout)||o.clearTimeout(this._uiWebViewResetPositionTimeout), this._uiWebViewResetPositionTimeout=o.setTimeout(function() {
+					this.resetPosition();
+					this.setUIWebViewResetPositionTimeout()
+				}
+				.bind(this), this.settings.uiWebViewResetPositionDelay)
+			}
+		}
+		, clearUIWebViewResetPositionTimeout:function() {
+			k.isNothing(this._uiWebViewResetPositionTimeout)||o.clearTimeout(this._uiWebViewResetPositionTimeout)
+		}
+		, onWindowScroll:function() {
+			this.resetPosition()
+		}
+		, onWindowOrientationChange:function() {
+			this.resetPosition()
+		}
+		, onWindowHashChange:function() {
+			if(o.location.hash!=="#"+(this.settings.jQueryMobile?this.settings.jQueryMobileDialogHash: this.currentHistoryHashValue)) {
+				this.backButtonClicked=!0, this.hide()
+			}
+		}
+		, onKeyDown:function(b) {
+			b.keyCode===37?(b.preventDefault(), this.previous()): b.keyCode===39?(b.preventDefault(), this.next()): b.keyCode===38||b.keyCode===40?b.preventDefault(): b.keyCode===27?(b.preventDefault(), this.hide()): b.keyCode===32?(this.settings.hideToolbar?this.hide(): this.toggleToolbar(), b.preventDefault()): b.keyCode===13&&(b.preventDefault(), this.play())
+		}
+		, onUILayerTouch:function(a) {
+			if(this.isZoomActive()) {
+				switch(a.action) {
+					case k.TouchElement.ActionTypes.gestureChange: this.zoomPanRotate.zoomRotate(a.scale, this.settings.allowRotationOnUserZoom?a.rotation: 0);
+					break;
+					case k.TouchElement.ActionTypes.gestureEnd: this.zoomPanRotate.setStartingScaleAndRotation(a.scale, this.settings.allowRotationOnUserZoom?a.rotation: 0);
+					break;
+					case k.TouchElement.ActionTypes.touchStart: this.zoomPanRotate.panStart(a.point);
+					break;
+					case k.TouchElement.ActionTypes.touchMove: this.zoomPanRotate.pan(a.point);
+					break;
+					case k.TouchElement.ActionTypes.doubleTap: this.destroyZoomPanRotate();
+					this.toggleToolbar();
+					break;
+					case k.TouchElement.ActionTypes.swipeLeft: this.destroyZoomPanRotate();
+					this.next();
+					this.toggleToolbar();
+					break;
+					case k.TouchElement.ActionTypes.swipeRight: this.destroyZoomPanRotate(), this.previous(), this.toggleToolbar()
+				}
+			}
+			else {
+				switch(a.action) {
+					case k.TouchElement.ActionTypes.touchMove: case k.TouchElement.ActionTypes.swipeLeft: case k.TouchElement.ActionTypes.swipeRight: this.fadeOutToolbarIfVisible();
+					this.carousel.onTouch(a.action, a.point);
+					break;
+					case k.TouchElement.ActionTypes.touchStart: case k.TouchElement.ActionTypes.touchMoveEnd: this.carousel.onTouch(a.action, a.point);
+					break;
+					case k.TouchElement.ActionTypes.tap: this.toggleToolbar();
+					break;
+					case k.TouchElement.ActionTypes.doubleTap: this.settings.target===o&&(a.point.x-=k.DOM.windowScrollLeft(), a.point.y-=k.DOM.windowScrollTop());
+					var e=this.cache.images[this.currentIndex].imageEl, h=o.parseInt(k.DOM.getStyle(e, "top"), 10), i=o.parseInt(k.DOM.getStyle(e, "left"), 10), j=i+k.DOM.width(e), e=h+k.DOM.height(e);
+					if(a.point.x<i) {
+						a.point.x=i
+					}
+					else {
+						if(a.point.x>j) {
+							a.point.x=j
+						}
+					}
+					if(a.point.y<h) {
+						a.point.y=h
+					}
+					else {
+						if(a.point.y>e) {
+							a.point.y=e
+						}
+					}
+					this.createZoomPanRotate();
+					this.isZoomActive()&&this.zoomPanRotate.zoomAndPanToPoint(this.settings.doubleTapZoomLevel, a.point);
+					break;
+					case k.TouchElement.ActionTypes.gestureStart:this.createZoomPanRotate()
+				}
+			}
+			k.Events.fire(this, {
+				type: r.EventTypes.onTouch, target: this, point: a.point, action: a.action
+			}
+			)
+		}
+		, onCarouselSlideByEnd:function(a) {
+			this.currentIndex=a.cacheIndex;
+			k.isNothing(this.toolbar)||(this.toolbar.setCaption(this.currentIndex), this.toolbar.setToolbarStatus(this.currentIndex));
+			k.Events.fire(this, {
+				type: r.EventTypes.onDisplayImage, target: this, action: a.action, index: a.cacheIndex
+			}
+			)
+		}
+		, onToolbarTap:function(a) {
+			switch(a.action) {
+				case p.ToolbarAction.next: this.next();
+				break;
+				case p.ToolbarAction.previous: this.previous();
+				break;
+				case p.ToolbarAction.close: this.hide();
+				break;
+				case p.ToolbarAction.play: this.play()
+			}
+			k.Events.fire(this, {
+				type: r.EventTypes.onToolbarTap, target: this, toolbarAction: a.action, tapTarget: a.tapTarget
+			}
+			)
+		}
+		, onMouseWheel:function(a) {
+			var d=k.Events.getWheelDelta(a);
+			if(!(a.timeStamp-(this.mouseWheelStartTime||0)<this.settings.mouseWheelSpeed)) {
+				this.mouseWheelStartTime=a.timeStamp, this.settings.invertMouseWheel&&(d*=-1), d<0?this.next(): d>0&&this.previous()
+			}
+		}
+		, onCarouselSlideshowStart:function() {
+			k.Events.fire(this, {
+				type: r.EventTypes.onSlideshowStart, target: this
+			}
+			)
+		}
+		, onCarouselSlideshowStop:function() {
+			k.Events.fire(this, {
+				type: r.EventTypes.onSlideshowStop, target: this
+			}
+			)
+		}
+		, onToolbarBeforeShow:function() {
+			k.Events.fire(this, {
+				type: r.EventTypes.onBeforeCaptionAndToolbarShow, target: this
+			}
+			)
+		}
+		, onToolbarShow:function() {
+			k.Events.fire(this, {
+				type: r.EventTypes.onCaptionAndToolbarShow, target: this
+			}
+			)
+		}
+		, onToolbarBeforeHide:function() {
+			k.Events.fire(this, {
+				type: r.EventTypes.onBeforeCaptionAndToolbarHide, target: this
+			}
+			)
+		}
+		, onToolbarHide:function() {
+			k.Events.fire(this, {
+				type: r.EventTypes.onCaptionAndToolbarHide, target: this
+			}
+			)
+		}
+		, onZoomPanRotateTransform:function(a) {
+			k.Events.fire(this, {
+				target: this, type: r.EventTypes.onZoomPanRotateTransform, scale: a.scale, rotation: a.rotation, rotationDegs: a.rotationDegs, translateX: a.translateX, translateY: a.translateY
+			}
+			)
+		}
+	}
+	)
+}
+
+)(window, window.klass, window.Code.Util, window.Code.PhotoSwipe.Cache, window.Code.PhotoSwipe.DocumentOverlay, window.Code.PhotoSwipe.Carousel, window.Code.PhotoSwipe.Toolbar, window.Code.PhotoSwipe.UILayer, window.Code.PhotoSwipe.ZoomPanRotate);

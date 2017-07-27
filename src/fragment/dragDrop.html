@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>yui</title>
+<meta name="keywords" content=""/>
+<meta name="description" content=""/>
+<meta charset="utf-8"/><meta name="renderer" content="webkit">
+<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+<meta content="telephone=no" name="format-detection"/>
+<link rel="stylesheet" type="text/css" href="../css/yui.css"/>
+</head>
+<body>
+	<div class="page-wrapper">
+		<div class="header"><a href="../index.html" class="icon-return"></a>dragDrop</div>
+		<div class="container">
+			<h2 class="yui-title">拖拽</h2>
+			<div class="relative">
+				<button type="button" class="btn btn-danger dragDrop" id="dragDrop">可拖动按钮</button>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript" src="../js/require.js" data-main="../js/main"  defer async="true" ></script>
+<!--<script type="text/javascript" src="../js/zepto.min.js"></script>-->
+<!--<script>
+$(function(){
+	// 获取节点
+  var dragDrop = document.getElementById("dragDrop"); 
+  var oW,oH; 
+  // 绑定touchstart事件
+  dragDrop.addEventListener("touchstart", function(e) {
+   console.log(e);
+   var touches = e.touches[0];
+   oW = touches.clientX - dragDrop.offsetLeft;
+   oH = touches.clientY - dragDrop.offsetTop;
+   //阻止页面的滑动默认事件
+   document.addEventListener("touchmove",defaultEvent,false);
+  },false);
+ 
+  dragDrop.addEventListener("touchmove", function(e) {
+   var touches = e.touches[0];
+   var oLeft = touches.clientX - oW;
+   var oTop = touches.clientY - oH;
+   if(oLeft < 0) {
+    oLeft = 0;
+   }else if(oLeft > document.documentElement.clientWidth - dragDrop.offsetWidth) {
+    oLeft = (document.documentElement.clientWidth - dragDrop.offsetWidth);
+   }
+   dragDrop.style.left = oLeft + "px";
+   dragDrop.style.top = oTop + "px";
+  },false);
+   
+  dragDrop.addEventListener("touchend",function() {
+   document.removeEventListener("touchmove",defaultEvent,false);
+  },false);
+});
+  
+  function defaultEvent(e) {
+   e.preventDefault();
+  }
+</script>-->
+</body>
+</html>

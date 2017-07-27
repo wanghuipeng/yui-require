@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>yui</title>
+<meta name="keywords" content=""/>
+<meta name="description" content=""/>
+<meta charset="utf-8"/><meta name="renderer" content="webkit">
+<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+<meta content="telephone=no" name="format-detection"/>
+<link rel="stylesheet" type="text/css" href="../css/yui.css"/>
+<link rel="stylesheet" type="text/css" href="../css/swiper.min.css"/>
+<style>
+.swiper-slide{text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.blue-slide{background:#4390EE}
+.red-slide{background:#CA4040}
+.orange-slide{background:#FF8604}
+.green-slide{background:#49a430}
+.pink-slide{background:#973e76}
+#swiper-container2 .active-nav{background:#ddd}
+#swiper-container2 .swiper-slide{color:#666}
+#swiper-container3 .swiper-slide{color:#fff}
+#swiper-container3{height:100px;line-height:100px}
+.topTabs.swiper-container{margin-bottom: -1px;}
+.topTabs#swiper-container1{margin-top: -1px;}
+</style>
+</head>
+<body>
+	<div class="page-wrapper">
+		<div class="header"><a href="../index.html" class="icon-return"></a>innerScroll</div>
+		<div class="container">
+			<h2 class="yui-title">innerScrollVert（垂直弹性--android不兼容）</h2>
+			<div class="innerScrollVert">
+				<ul class="list">
+					<li class="list-item list-divider"><label class="list-label" id="A">A</label></li>
+					<li class="list-item"><label class="list-label">阿富汗机场</label></li>
+					<li class="list-item"><label class="list-label">阿拉伯机场</label></li>
+					<li class="list-item"><label class="list-label">阿根廷机场</label></li>
+					<li class="list-item list-divider"><label class="list-label" id="B">B</label></li>
+					<li class="list-item"><label class="list-label">巴拉圭机场</label></li>
+					<li class="list-item"><label class="list-label">北京首都国际机场</label></li>
+					<li class="list-item"><label class="list-label">包头机场</label></li>
+					<li class="list-item list-divider"><label class="list-label" id="C">C</label></li>
+					<li class="list-item"><label class="list-label">长白山机场</label></li>
+					<li class="list-item"><label class="list-label">长春机场</label></li>
+					<li class="list-item"><label class="list-label">成都机场</label></li>
+					<li class="list-item"><label class="list-label">重庆机场</label></li>
+					<li class="list-item"><label class="list-label">常州机场</label></li>
+					<li class="list-item"><label class="list-label">赤峰机场</label></li>
+					<li class="list-item list-divider"><label class="list-label" id="D">D</label></li>
+					<li class="list-item"><label class="list-label">大理机场</label></li>
+					<li class="list-item"><label class="list-label">大连机场</label></li>
+					<li class="list-item"><label class="list-label">大庆机场</label></li>
+					<li class="list-item"><label class="list-label">大同机场</label></li>
+					<li class="list-item"><label class="list-label">敦煌机场</label></li>
+				</ul>
+			</div>
+			<h2 class="yui-title">innerScrollHoriz（水平弹性<span class="red">（用css实现）</span>）</h2>
+			<div class="innerScrollHoriz">
+				<div class="topTabs">
+					<ul>
+						<li>tab1</li>
+						<li>tab2</li>
+						<li>tab3</li>
+						<li>tab4</li>
+						<li>tab5</li>
+						<li>tab6</li>
+						<li>tab7</li>
+					</ul>
+				</div>
+			</div>
+			<div class="topTabs swiper-container swiper-container-horizontal" id="swiper-container1">
+				<div class="swiper-wrapper">
+					<div class="swiper-slide">演唱会</div>
+					<div class="swiper-slide">音乐会</div>
+					<div class="swiper-slide">话剧歌剧</div>
+					<div class="swiper-slide">动漫</div>
+					<div class="swiper-slide">舞蹈芭蕾</div>
+					<div class="swiper-slide">曲艺杂谈</div>
+					<div class="swiper-slide">体育比赛</div>
+					<div class="swiper-slide">度假休闲</div>
+					<div class="swiper-slide">周边商品</div>
+					<div class="swiper-slide">儿童亲子</div>
+				</div>
+			</div>
+			<h2 class="yui-title">innerScrollElastic（水平弹性<span class="red">（用js实现）</span>）</h2>
+			<div class="innerScrollElastic">
+				<div class="topTabs" >
+					<ul class="tabs-2-item">
+						<li class="current">tab1</li>
+						<li>tab2</li>
+					</ul>
+				</div>
+				<div class="tab-contents">
+					<div class="tab-item current">tab1...</div>
+					<div class="tab-item">tab2...</div>
+				</div>
+			</div>
+			
+			<div class="topTabs swiper-container swiper-container-horizontal" id="swiper-container2" >
+				<div class="swiper-wrapper">
+					<div class="swiper-slide">
+						版块1</div>
+					<div class="swiper-slide">
+						版块2</div>
+					<div class="swiper-slide">
+						版块3</div>
+					<div class="swiper-slide">
+						版块4</div>
+					<div class="swiper-slide">
+						版块5</div>
+					<div class="swiper-slide">
+						版块6</div>
+					<div class="swiper-slide">
+						版块7</div>
+					<div class="swiper-slide">
+						版块8</div>
+				</div>
+			</div>
+			<div class="topTabs swiper-container swiper-container-horizontal" id="swiper-container3" >
+				<div class="swiper-wrapper" >
+					<div class="swiper-slide blue-slide">
+						slider1</div>
+					<div class="swiper-slide red-slide">
+						slider2</div>
+					<div class="swiper-slide orange-slide">
+						slider3</div>
+					<div class="swiper-slide blue-slide">
+						slider4</div>
+					<div class="swiper-slide red-slide">
+						slider5</div>
+					<div class="swiper-slide orange-slide">
+						slider6</div>
+					<div class="swiper-slide blue-slide">
+						slider7</div>
+					<div class="swiper-slide red-slide">
+						slider8</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript" src="../js/require.js" data-main="../js/main"  defer async="true"></script> 
+</body>  
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>yui</title>
+<meta name="keywords" content=""/>
+<meta name="description" content=""/>
+<meta charset="utf-8"/><meta name="renderer" content="webkit">
+<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+<meta content="telephone=no" name="format-detection"/>
+<link rel="stylesheet" type="text/css" href="../css/yui.css"/>
+</head>
+<body>
+	<div class="page-wrapper">
+		<div class="header"><a href="../index.html" class="icon-return"></a>modals</div>
+		<div class="container">
+			<h2 class="yui-title">模态弹框</h2>
+			<div class="box">
+				<button type="button" data-role="yui-alert" class="btn btn-info showModal" onclick="yui_alert('这是alert的title','这是alert的text')">alert</button>
+				<button type="button" data-role="yui-confirm" class="btn btn-success showModal" onclick="yui_confirm('这是confirm的title','这是confirm的text','我知道了','谢谢！')">confirm</button>
+				<button type="button" data-role="yui-confirm" class="btn btn-default showModal" onclick="yui_confirm('呵呵哒','这是呵呵哒','呵呵呵呵','呵呵呵呵！')">confirm</button>
+				<button type="button" data-role="yui-prompt" class="btn btn-primary showModal" onclick="yui_prompt('这是prompt的title','这是prompt的text','你刚才填写了文本框','谢谢！','填写的值为：','')">prompt</button>
+				<button type="button" data-role="yui-message" class="btn btn-danger" onclick="yui_message('请输入搜索关键字',3,true)">message</button>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript" src="../js/require.js" data-main="../js/main"  defer async="true"></script> 
+<script src="../js/zepto.min.js"></script>
+<script>
+	//alert模态框
+	function yui_alert(_modal_title,_modal_text){
+		$("body").append("<div class='yui-modal in' id='yui-alert'>"
+		+"<div class='yui-modal-content'><div class='yui-modal-title'>"+_modal_title+"</div><div class='yui-modal-text'>"+_modal_text+"</div></div>"
+		+"<div class='yui-modal-btnGroup'><ul class='flex-group'><li><button class='btn btn-block hideModal'>确定</button></li>"
+		+"</ul></div></div>");
+	}
+	//confirm模态框
+	function yui_confirm(_modal_title,_modal_text,_modal_title_1,_modal_text_1){ 
+		this._modal_title = _modal_title;
+		this._modal_text = _modal_text;
+		this._modal_title_1 = _modal_title_1;
+		this._modal_text_1 = _modal_text_1;
+		$("body").append("<div class='yui-modal in' id='yui-confirm'>"
+		+"<div class='yui-modal-content'><div class='yui-modal-title'>"+_modal_title+"</div><div class='yui-modal-text'>"+_modal_text+"</div></div>" 
+		+"<div class='yui-modal-btnGroup'><ul class='flex-group'><li><button class='btn btn-block hideModalShowAlert' data-role='yui-alert' >确定</button></li>" 
+		+"<li><button class='btn btn-block hideModal'>取消</button></li></ul></div></div>");
+	}
+	//prompt模态框
+	function yui_prompt(_modal_title,_modal_text,_modal_title_1,_modal_text_1,_modal_title_2,_modal_text_2){
+		this._modal_title = _modal_title;
+		this._modal_text = _modal_text;
+		this._modal_title_1 = _modal_title_1;
+		this._modal_text_1 = _modal_text_1;
+		this._modal_title_2 = _modal_title_2;
+		this._modal_text_2 = $(".form-input").val();
+		$("body").append("<div class='yui-modal in' id='yui-prompt'>"
+		+"<div class='yui-modal-content'><div class='yui-modal-title'>"+_modal_title+"</div><div class='yui-modal-text'>"+_modal_text+"</div>"
+		+"<div class='yui-modal-input'><input type='text' class='form-input' placeholder='这里是文本框！' /></div></div>"
+		+"<div class='yui-modal-btnGroup'><ul class='flex-group'><li><button class='btn btn-block hideModalShowConfirm' data-role='yui-confirm' >确定</button></li>"
+		+"<li><button class='btn btn-block hideModal'>取消</button></li></ul></div></div>");
+	}
+	//消息提示模态框
+	function yui_message(_message,_second,_hasModalOverlay){
+		$("body").append("<div class='yui-message in'>"+_message+"</div>");
+		if(_hasModalOverlay){
+			$("body").append("<div class='yui-modal-overlay' id='yui-message-overlay'></div>"); //模态框 
+			setTimeout(function(){
+				$(".yui-message").remove();
+				$("#yui-message-overlay").remove();
+			},1000*_second);
+		}else{
+			setTimeout(function(){
+				$(".yui-message").remove();
+			},1000*_second);
+		}
+	}
+</script>
+</body>
+</html>
